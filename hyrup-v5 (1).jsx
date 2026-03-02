@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 
 /* ═══════════════════════════════════════════════════════════════════════
    HYRUP — COMPLETE DESIGN SYSTEM v5
@@ -39,38 +39,38 @@ const T = {
 
 /* ── SVG ICON LIBRARY ── */
 const IC = {
-  home:    "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-  brief:   "M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2",
-  chat:    "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
-  news:    "M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2zM14 4v6h6",
-  user:    "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
-  users:   "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
-  layers:  "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
-  bell:    "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0",
-  search:  "M21 21l-4.35-4.35M11 3a8 8 0 1 0 0 16A8 8 0 0 0 11 3z",
-  bmark:   "M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z",
-  heart:   "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z",
-  share:   "M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13",
-  plus:    "M12 5v14M5 12h14",
-  check:   "M20 6L9 17l-5-5",
-  x:       "M18 6 6 18M6 6l12 12",
-  zap:     "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
-  spark:   "M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z",
-  loc:     "M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0zM12 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
-  edit:    "M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z",
-  arrow:   "M5 12h14M12 5l7 7-7 7",
-  menu:    "M3 12h18M3 6h18M3 18h18",
-  dot3:    "M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z",
-  award:   "M12 15a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM8.21 13.89L7 23l5-3 5 3-1.21-9.12",
-  grid:    "M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z",
-  hash:    "M4 9h16M4 15h16M10 3L8 21M16 3l-2 18",
-  send:    "M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z",
-  img:     "M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3l2-3h4l2 3h3a2 2 0 0 1 2 2v11zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
-  star:    "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
-  attach:  "M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48",
-  swipe:   "M7 16l-4-4 4-4M17 8l4 4-4 4M3 12h18",
-  fire:    "M12 2c0 0-5 5.5-5 9a5 5 0 0 0 10 0c0-3.5-5-9-5-9zM9.5 14a2.5 2.5 0 0 0 5 0c0-2-2.5-5-2.5-5S9.5 12 9.5 14z",
-  undo:    "M9 14L4 9l5-5M4 9h11a4 4 0 0 1 0 8h-1",
+  home: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+  brief: "M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2",
+  chat: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+  news: "M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2zM14 4v6h6",
+  user: "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  users: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
+  layers: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+  bell: "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0",
+  search: "M21 21l-4.35-4.35M11 3a8 8 0 1 0 0 16A8 8 0 0 0 11 3z",
+  bmark: "M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z",
+  heart: "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z",
+  share: "M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13",
+  plus: "M12 5v14M5 12h14",
+  check: "M20 6L9 17l-5-5",
+  x: "M18 6 6 18M6 6l12 12",
+  zap: "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
+  spark: "M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z",
+  loc: "M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0zM12 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+  edit: "M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z",
+  arrow: "M5 12h14M12 5l7 7-7 7",
+  menu: "M3 12h18M3 6h18M3 18h18",
+  dot3: "M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z",
+  award: "M12 15a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM8.21 13.89L7 23l5-3 5 3-1.21-9.12",
+  grid: "M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z",
+  hash: "M4 9h16M4 15h16M10 3L8 21M16 3l-2 18",
+  send: "M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z",
+  img: "M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3l2-3h4l2 3h3a2 2 0 0 1 2 2v11zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  star: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  attach: "M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48",
+  swipe: "M7 16l-4-4 4-4M17 8l4 4-4 4M3 12h18",
+  fire: "M12 2c0 0-5 5.5-5 9a5 5 0 0 0 10 0c0-3.5-5-9-5-9zM9.5 14a2.5 2.5 0 0 0 5 0c0-2-2.5-5-2.5-5S9.5 12 9.5 14z",
+  undo: "M9 14L4 9l5-5M4 9h11a4 4 0 0 1 0 8h-1",
 };
 
 const Svg = ({ d, s = 20, c = "#fff", w = 1.85, fill = "none" }) => (
@@ -199,33 +199,45 @@ const Phone = ({ children, mode }) => {
    • Stamp animation: "APPLYING ✓" / "SKIPPING ✗" overlay on decision
    • Undo last action (30s window)
 ═══════════════════════════════════════════════════════════════════════ */
-const SwipeScreen = ({ onClose }) => {
+const SwipeScreen = ({ onClose, cards: externalCards, initialIndex = 0, onAction }) => {
   const t = T.c;
 
-  const CARDS = [
-    { role: "Frontend Dev Intern", co: "Zepto", loc: "Remote", pay: "₹15K/mo", match: 94, ch: "Z",
+  const CARDS_BUILTIN = [
+    {
+      role: "Frontend Dev Intern", co: "Zepto", loc: "Remote", pay: "₹15K/mo", match: 94, ch: "Z",
       tags: ["React", "TypeScript", "TailwindCSS"], type: "Internship",
       grad: "linear-gradient(145deg, #1C0D00, #2D1600)", accentGrad: "linear-gradient(90deg,#FF7A1A,#FF9A45)",
-      desc: "Build and ship features used by 10M+ users. Fast-paced, high-ownership culture. Strong mentorship from senior engineers." },
-    { role: "UI/UX Designer", co: "Groww", loc: "Bengaluru", pay: "₹20K/mo", match: 88, ch: "G",
+      desc: "Build and ship features used by 10M+ users. Fast-paced, high-ownership culture. Strong mentorship from senior engineers."
+    },
+    {
+      role: "UI/UX Designer", co: "Groww", loc: "Bengaluru", pay: "₹20K/mo", match: 88, ch: "G",
       tags: ["Figma", "Prototyping", "Design Systems"], type: "Internship",
       grad: "linear-gradient(145deg, #001A0D, #002E1A)", accentGrad: "linear-gradient(90deg,#22C55E,#4ADE80)",
-      desc: "Own end-to-end design for new investor features. Work directly with PMs. Portfolio-building opportunity." },
-    { role: "Backend Intern", co: "Razorpay", loc: "Hybrid", pay: "₹25K/mo", match: 91, ch: "R",
+      desc: "Own end-to-end design for new investor features. Work directly with PMs. Portfolio-building opportunity."
+    },
+    {
+      role: "Backend Intern", co: "Razorpay", loc: "Hybrid", pay: "₹25K/mo", match: 91, ch: "R",
       tags: ["Node.js", "MongoDB", "AWS"], type: "Internship",
       grad: "linear-gradient(145deg, #00101A, #001C2E)", accentGrad: "linear-gradient(90deg,#3B82F6,#60A5FA)",
-      desc: "Work on payment infrastructure serving 8M+ businesses. Real ownership, real impact. Pre-placement offer possible." },
-    { role: "Data Analyst", co: "Meesho", loc: "Noida", pay: "₹12K/mo", match: 79, ch: "M",
+      desc: "Work on payment infrastructure serving 8M+ businesses. Real ownership, real impact. Pre-placement offer possible."
+    },
+    {
+      role: "Data Analyst", co: "Meesho", loc: "Noida", pay: "₹12K/mo", match: 79, ch: "M",
       tags: ["Python", "SQL", "Power BI"], type: "Internship",
       grad: "linear-gradient(145deg, #120018, #1E0028)", accentGrad: "linear-gradient(90deg,#A855F7,#C084FC)",
-      desc: "Analyze seller and buyer behavior data. Build dashboards used by leadership. Strong data team culture." },
-    { role: "Product Intern", co: "CRED", loc: "Bengaluru", pay: "₹22K/mo", match: 86, ch: "C",
+      desc: "Analyze seller and buyer behavior data. Build dashboards used by leadership. Strong data team culture."
+    },
+    {
+      role: "Product Intern", co: "CRED", loc: "Bengaluru", pay: "₹22K/mo", match: 86, ch: "C",
       tags: ["Product Thinking", "SQL", "Figma"], type: "Internship",
       grad: "linear-gradient(145deg, #1A1000, #2D1E00)", accentGrad: "linear-gradient(90deg,#F59E0B,#FBBF24)",
-      desc: "Define product specs for CRED's rewards engine. Work with design + eng. Weekly reviews with CPO." },
+      desc: "Define product specs for CRED's rewards engine. Work with design + eng. Weekly reviews with CPO."
+    },
   ];
 
-  const [idx, setIdx] = useState(0);
+  const CARDS = externalCards || CARDS_BUILTIN;
+
+  const [idx, setIdx] = useState(initialIndex);
   const [drag, setDrag] = useState(0);           // px offset during drag
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
@@ -249,6 +261,11 @@ const SwipeScreen = ({ onClose }) => {
     setStamp(action);
     setTimeout(() => {
       setStamp(null);
+      if (onAction) {
+        onAction(action, idx);
+        onClose();
+        return;
+      }
       if (action === "apply") setApplied(a => [...a, idx]);
       else if (action === "skip") setSkipped(s => [...s, idx]);
       else if (action === "save") setSaved(s => [...s, idx]);
@@ -277,8 +294,8 @@ const SwipeScreen = ({ onClose }) => {
     else setDrag(0);
   };
 
-  const applyGlow = drag > 40 ? `0 0 60px rgba(34,197,94,${Math.min(drag/200,0.6)})` : "none";
-  const skipGlow  = drag < -40 ? `0 0 60px rgba(239,68,68,${Math.min(-drag/200,0.6)})` : "none";
+  const applyGlow = drag > 40 ? `0 0 60px rgba(34,197,94,${Math.min(drag / 200, 0.6)})` : "none";
+  const skipGlow = drag < -40 ? `0 0 60px rgba(239,68,68,${Math.min(-drag / 200, 0.6)})` : "none";
 
   if (showResult || done) {
     return (
@@ -327,7 +344,7 @@ const SwipeScreen = ({ onClose }) => {
 
         {/* Background card (next card peeking) */}
         {nextCard && (
-          <div style={{ position: "absolute", left: 36, right: 36, top: 10, borderRadius: 28, background: T.c.s1, border: `1px solid ${T.c.border}`, height: "82%", transform: `scale(${0.94 + Math.min(Math.abs(drag)/1000, 0.04)})`, transition: isDragging ? "none" : "transform 0.3s ease", zIndex: 0 }} />
+          <div style={{ position: "absolute", left: 36, right: 36, top: 10, borderRadius: 28, background: T.c.s1, border: `1px solid ${T.c.border}`, height: "82%", transform: `scale(${0.94 + Math.min(Math.abs(drag) / 1000, 0.04)})`, transition: isDragging ? "none" : "transform 0.3s ease", zIndex: 0 }} />
         )}
 
         {/* Main swipeable card */}
@@ -350,10 +367,10 @@ const SwipeScreen = ({ onClose }) => {
         >
           {/* Directional glow overlays */}
           {drag > 20 && (
-            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, rgba(34,197,94,${Math.min(drag/300,0.18)}), transparent)`, borderRadius: 28, pointerEvents: "none", zIndex: 10 }} />
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, rgba(34,197,94,${Math.min(drag / 300, 0.18)}), transparent)`, borderRadius: 28, pointerEvents: "none", zIndex: 10 }} />
           )}
           {drag < -20 && (
-            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(225deg, rgba(239,68,68,${Math.min(-drag/300,0.18)}), transparent)`, borderRadius: 28, pointerEvents: "none", zIndex: 10 }} />
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(225deg, rgba(239,68,68,${Math.min(-drag / 300, 0.18)}), transparent)`, borderRadius: 28, pointerEvents: "none", zIndex: 10 }} />
           )}
 
           {/* STAMP overlay */}
@@ -475,7 +492,7 @@ const SwipeScreen = ({ onClose }) => {
 
 
 /* ── CAREER HOME ── ref: fitness home hero + smart home layout */
-const CareerHome = ({ mode, onToggle }) => {
+const CareerHome = ({ mode, onToggle, appliedCount = 0 }) => {
   const t = T.c;
   const [showSwipe, setShowSwipe] = useState(false);
   const jobs = [
@@ -489,181 +506,390 @@ const CareerHome = ({ mode, onToggle }) => {
   return (
     <>
       <Col g={0}>
-      {/* Header — ref: meditation app personal greeting */}
-      <div style={{ padding: "10px 22px 16px" }}>
-        <Row ai="flex-start" jc="space-between">
-          <Col g={2}>
-            <span style={{ fontFamily: FB, fontSize: 12, color: t.t2, fontWeight: 500 }}>Good morning 👋</span>
-            <span style={{ fontFamily: FD, fontSize: 26, fontWeight: 800, color: t.t1, letterSpacing: -0.8, lineHeight: 1.1 }}>Rahul Sharma</span>
-          </Col>
-          <Row g={10} ai="center" sx={{ marginTop: 4 }}>
-            <ModeToggle mode={mode} onToggle={onToggle} />
-            <div style={{ position: "relative" }}>
-              <div style={{ width: 38, height: 38, borderRadius: 14, background: t.s2, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Svg d={IC.bell} s={17} c={t.t2} />
+        {/* Header — ref: meditation app personal greeting */}
+        <div style={{ padding: "10px 22px 16px" }}>
+          <Row ai="flex-start" jc="space-between">
+            <Col g={2}>
+              <span style={{ fontFamily: FB, fontSize: 12, color: t.t2, fontWeight: 500 }}>Good morning 👋</span>
+              <span style={{ fontFamily: FD, fontSize: 26, fontWeight: 800, color: t.t1, letterSpacing: -0.8, lineHeight: 1.1 }}>Rahul Sharma</span>
+            </Col>
+            <Row g={10} ai="center" sx={{ marginTop: 4 }}>
+              <ModeToggle mode={mode} onToggle={onToggle} />
+              <div style={{ position: "relative" }}>
+                <div style={{ width: 38, height: 38, borderRadius: 14, background: t.s2, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Svg d={IC.bell} s={17} c={t.t2} />
+                </div>
+                <div style={{ position: "absolute", top: 8, right: 9, width: 7, height: 7, borderRadius: 4, background: t.orange, border: `1.5px solid ${t.bg}` }} />
               </div>
-              <div style={{ position: "absolute", top: 8, right: 9, width: 7, height: 7, borderRadius: 4, background: t.orange, border: `1.5px solid ${t.bg}` }} />
+            </Row>
+          </Row>
+        </div>
+
+        {/* Hero card — ref: meditation app "Relief Meditation" full-bleed card */}
+        <div style={{ margin: "0 22px 20px", height: 158, borderRadius: 24, background: `linear-gradient(135deg, #1C0D00 0%, #2E1600 60%, #1C0D00 100%)`, position: "relative", overflow: "hidden", padding: "20px 20px" }}>
+          <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: t.orangeMid, filter: "blur(60px)" }} />
+          <div style={{ position: "absolute", bottom: -20, left: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,122,26,0.08)", filter: "blur(40px)" }} />
+          <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: t.orange, letterSpacing: 1.5, position: "relative", zIndex: 1, display: "block", marginBottom: 6 }}>PROFILE STRENGTH</span>
+          <span style={{ fontFamily: FD, fontSize: 36, fontWeight: 800, color: t.t1, position: "relative", zIndex: 1, display: "block", lineHeight: 1, marginBottom: 4 }}>72<span style={{ fontSize: 18, fontWeight: 500, color: t.t2 }}>%</span></span>
+          <span style={{ fontFamily: FB, fontSize: 12, color: "rgba(255,255,255,0.4)", position: "relative", zIndex: 1 }}>Add 2 skills to unlock Recruiter-Ready</span>
+          <div style={{ position: "absolute", bottom: 16, left: 20, right: 20, height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 2, overflow: "hidden" }}>
+            <div style={{ width: "72%", height: "100%", background: `linear-gradient(90deg, ${t.orange}, #FFB36B)`, borderRadius: 2 }} />
+          </div>
+        </div>
+
+        {/* 3-stat row — ref: skincare score pattern */}
+        <Row g={10} sx={{ padding: "0 22px 20px" }}>
+          {[[String(appliedCount), "Applied", t.orange], ["3", "Shortlisted", T.c.green], ["48", "Views", T.c.blue]].map(([n, l, col]) => (
+            <div key={l} style={{ flex: 1, background: t.s2, borderRadius: 18, padding: "16px 12px", border: `1px solid ${t.border}`, textAlign: "center" }}>
+              <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 26, color: col, display: "block", lineHeight: 1 }}>{n}</span>
+              <span style={{ fontFamily: FB, fontSize: 10, color: t.t2, marginTop: 3, display: "block" }}>{l}</span>
+            </div>
+          ))}
+        </Row>
+
+        {/* Section label */}
+        <Row ai="center" jc="space-between" sx={{ padding: "0 22px 12px" }}>
+          <span style={{ fontFamily: FD, fontWeight: 700, fontSize: 17, color: t.t1 }}>Matched for you</span>
+          <span style={{ fontFamily: FB, fontSize: 12, color: t.orange, fontWeight: 600 }}>See all →</span>
+        </Row>
+
+        {/* ── QUICK APPLY CTA — swipe entry point ── */}
+        {/* UX: lives on Home as daily action card — habit loop like Duolingo streak */}
+        <div onClick={() => setShowSwipe(true)} style={{
+          margin: "0 22px 20px", borderRadius: 22,
+          background: "linear-gradient(125deg, #1C0D00 0%, #2D1600 50%, #1A0A00 100%)",
+          border: `1px solid ${t.orange}30`,
+          padding: "18px 20px", cursor: "pointer", position: "relative", overflow: "hidden",
+          boxShadow: `0 8px 32px rgba(255,122,26,0.15)`,
+        }}>
+          {/* Glow effects */}
+          <div style={{ position: "absolute", top: -30, right: -30, width: 150, height: 150, borderRadius: "50%", background: "rgba(255,122,26,0.18)", filter: "blur(50px)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: -20, left: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,122,26,0.08)", filter: "blur(40px)", pointerEvents: "none" }} />
+
+          <Row ai="center" jc="space-between" sx={{ position: "relative", zIndex: 1 }}>
+            <Col g={6}>
+              {/* Animated swipe hint */}
+              <Row g={8} ai="center" sx={{ marginBottom: 4 }}>
+                <div style={{ display: "flex", gap: 3 }}>
+                  {[0, 1, 2].map(i => (
+                    <div key={i} style={{ width: i === 1 ? 24 : 16, height: 5, borderRadius: 3, background: i === 0 ? "rgba(239,68,68,0.7)" : i === 1 ? t.orange : "rgba(34,197,94,0.7)" }} />
+                  ))}
+                </div>
+                <span style={{ fontFamily: FB, fontSize: 10, fontWeight: 700, color: t.orange, letterSpacing: 1.2 }}>QUICK APPLY</span>
+              </Row>
+              <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 20, color: "#fff", lineHeight: 1.2 }}>
+                5 jobs waiting<br />for your decision
+              </span>
+              <span style={{ fontFamily: FB, fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>
+                Swipe right to apply · left to skip
+              </span>
+            </Col>
+            {/* Visual swipe card stack */}
+            <div style={{ position: "relative", width: 64, height: 80, flexShrink: 0 }}>
+              {[2, 1, 0].map(i => (
+                <div key={i} style={{
+                  position: "absolute", width: 52, height: 70,
+                  background: i === 0 ? "rgba(255,122,26,0.2)" : i === 1 ? "rgba(255,122,26,0.1)" : "rgba(255,122,26,0.05)",
+                  border: `1px solid rgba(255,122,26,${0.15 - i * 0.04})`,
+                  borderRadius: 14,
+                  top: i * 5, left: i * 4,
+                  transform: `rotate(${i === 1 ? 6 : i === 2 ? 12 : 0}deg)`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  {i === 0 && <Svg d={IC.swipe} s={20} c={t.orange} />}
+                </div>
+              ))}
             </div>
           </Row>
-        </Row>
-      </div>
-
-      {/* Hero card — ref: meditation app "Relief Meditation" full-bleed card */}
-      <div style={{ margin: "0 22px 20px", height: 158, borderRadius: 24, background: `linear-gradient(135deg, #1C0D00 0%, #2E1600 60%, #1C0D00 100%)`, position: "relative", overflow: "hidden", padding: "20px 20px" }}>
-        <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: t.orangeMid, filter: "blur(60px)" }} />
-        <div style={{ position: "absolute", bottom: -20, left: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,122,26,0.08)", filter: "blur(40px)" }} />
-        <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: t.orange, letterSpacing: 1.5, position: "relative", zIndex: 1, display: "block", marginBottom: 6 }}>PROFILE STRENGTH</span>
-        <span style={{ fontFamily: FD, fontSize: 36, fontWeight: 800, color: t.t1, position: "relative", zIndex: 1, display: "block", lineHeight: 1, marginBottom: 4 }}>72<span style={{ fontSize: 18, fontWeight: 500, color: t.t2 }}>%</span></span>
-        <span style={{ fontFamily: FB, fontSize: 12, color: "rgba(255,255,255,0.4)", position: "relative", zIndex: 1 }}>Add 2 skills to unlock Recruiter-Ready</span>
-        <div style={{ position: "absolute", bottom: 16, left: 20, right: 20, height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 2, overflow: "hidden" }}>
-          <div style={{ width: "72%", height: "100%", background: `linear-gradient(90deg, ${t.orange}, #FFB36B)`, borderRadius: 2 }} />
+          {/* CTA button */}
+          <button onClick={e => { e.stopPropagation(); setShowSwipe(true); }} style={{
+            marginTop: 16, width: "100%", height: 42, borderRadius: 13,
+            background: t.orange, border: "none", color: "#fff",
+            fontFamily: FB, fontSize: 14, fontWeight: 800, cursor: "pointer",
+            position: "relative", zIndex: 1,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            boxShadow: `0 4px 16px rgba(255,122,26,0.3)`,
+          }}>
+            <Svg d={IC.swipe} s={16} c="#fff" />
+            Start Swiping
+          </button>
         </div>
-      </div>
 
-      {/* 3-stat row — ref: skincare score pattern */}
-      <Row g={10} sx={{ padding: "0 22px 20px" }}>
-        {[["12", "Applied", t.orange], ["3", "Shortlisted", T.c.green], ["48", "Views", T.c.blue]].map(([n, l, col]) => (
-          <div key={l} style={{ flex: 1, background: t.s2, borderRadius: 18, padding: "16px 12px", border: `1px solid ${t.border}`, textAlign: "center" }}>
-            <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 26, color: col, display: "block", lineHeight: 1 }}>{n}</span>
-            <span style={{ fontFamily: FB, fontSize: 10, color: t.t2, marginTop: 3, display: "block" }}>{l}</span>
+        {/* Horizontal job cards — ref: meditation "practice of day" scroll cards */}
+        <div style={{ display: "flex", gap: 12, padding: "0 22px 20px", overflowX: "auto" }}>
+          {jobs.map((j, i) => (
+            <div key={i} style={{ background: t.s2, borderRadius: t.r, padding: 16, minWidth: 188, border: `1px solid ${t.border}`, flexShrink: 0 }}>
+              <Row g={10} ai="center" sx={{ marginBottom: 12 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 14, background: t.s3, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 18, color: t.orange }}>{j.ch}</span>
+                </div>
+                <Col g={2} sx={{ flex: 1 }}>
+                  <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 13, color: t.t1, lineHeight: 1.3 }}>{j.role}</span>
+                  <span style={{ fontFamily: FB, fontSize: 11, color: t.t2 }}>{j.co} · {j.loc}</span>
+                </Col>
+              </Row>
+              <Row g={5} sx={{ flexWrap: "wrap", marginBottom: 12 }}>
+                {j.tags.map(tg => <span key={tg} style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: t.orange, background: t.orangeLo, padding: "3px 9px", borderRadius: 100 }}>{tg}</span>)}
+                <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: T.c.green, background: `${T.c.green}15`, padding: "3px 9px", borderRadius: 100 }}>{j.pay}</span>
+              </Row>
+              <Row ai="center" jc="space-between">
+                <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 700, color: t.orange, background: t.orangeLo, padding: "4px 10px", borderRadius: 8 }}>{j.match}%</span>
+                <button style={{ height: 30, padding: "0 14px", borderRadius: 100, background: t.orange, border: "none", color: "#fff", fontFamily: FB, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Apply</button>
+              </Row>
+            </div>
+          ))}
+        </div>
+
+        {/* News strip — compact list ref: skincare routine list */}
+        <Row ai="center" jc="space-between" sx={{ padding: "0 22px 10px" }}>
+          <span style={{ fontFamily: FD, fontWeight: 700, fontSize: 17, color: t.t1 }}>Tech Pulse ⚡</span>
+          <span style={{ fontFamily: FB, fontSize: 12, color: t.orange, fontWeight: 600 }}>More →</span>
+        </Row>
+        {[
+          { h: "Anthropic raises $2B — AI talent demand surges across India", src: "TechCrunch", time: "2h" },
+          { h: "Top 10 skills hiring managers want in 2025 interns", src: "Forbes", time: "5h" },
+        ].map((n, i) => (
+          <div key={i} style={{ margin: "0 22px 10px", display: "flex", gap: 12, padding: "12px 14px", background: t.s2, borderRadius: 16, border: `1px solid ${t.border}`, alignItems: "center" }}>
+            <div style={{ width: 46, height: 46, borderRadius: 13, background: t.s3, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Svg d={IC.zap} s={20} c={t.orange} />
+            </div>
+            <Col g={4} sx={{ flex: 1 }}>
+              <span style={{ fontFamily: FB, fontWeight: 600, fontSize: 13, color: t.t1, lineHeight: 1.4 }}>{n.h}</span>
+              <Row g={8}>
+                <span style={{ fontFamily: FB, fontSize: 10, fontWeight: 700, color: t.orange, background: t.orangeLo, padding: "2px 7px", borderRadius: 100 }}>{n.src}</span>
+                <span style={{ fontFamily: FB, fontSize: 10, color: t.t3 }}>{n.time} ago</span>
+              </Row>
+            </Col>
           </div>
         ))}
-      </Row>
-
-      {/* Section label */}
-      <Row ai="center" jc="space-between" sx={{ padding: "0 22px 12px" }}>
-        <span style={{ fontFamily: FD, fontWeight: 700, fontSize: 17, color: t.t1 }}>Matched for you</span>
-        <span style={{ fontFamily: FB, fontSize: 12, color: t.orange, fontWeight: 600 }}>See all →</span>
-      </Row>
-
-      {/* ── QUICK APPLY CTA — swipe entry point ── */}
-      {/* UX: lives on Home as daily action card — habit loop like Duolingo streak */}
-      <div onClick={() => setShowSwipe(true)} style={{
-        margin: "0 22px 20px", borderRadius: 22,
-        background: "linear-gradient(125deg, #1C0D00 0%, #2D1600 50%, #1A0A00 100%)",
-        border: `1px solid ${t.orange}30`,
-        padding: "18px 20px", cursor: "pointer", position: "relative", overflow: "hidden",
-        boxShadow: `0 8px 32px rgba(255,122,26,0.15)`,
-      }}>
-        {/* Glow effects */}
-        <div style={{ position: "absolute", top: -30, right: -30, width: 150, height: 150, borderRadius: "50%", background: "rgba(255,122,26,0.18)", filter: "blur(50px)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -20, left: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,122,26,0.08)", filter: "blur(40px)", pointerEvents: "none" }} />
-
-        <Row ai="center" jc="space-between" sx={{ position: "relative", zIndex: 1 }}>
-          <Col g={6}>
-            {/* Animated swipe hint */}
-            <Row g={8} ai="center" sx={{ marginBottom: 4 }}>
-              <div style={{ display: "flex", gap: 3 }}>
-                {[0, 1, 2].map(i => (
-                  <div key={i} style={{ width: i === 1 ? 24 : 16, height: 5, borderRadius: 3, background: i === 0 ? "rgba(239,68,68,0.7)" : i === 1 ? t.orange : "rgba(34,197,94,0.7)" }} />
-                ))}
-              </div>
-              <span style={{ fontFamily: FB, fontSize: 10, fontWeight: 700, color: t.orange, letterSpacing: 1.2 }}>QUICK APPLY</span>
-            </Row>
-            <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 20, color: "#fff", lineHeight: 1.2 }}>
-              5 jobs waiting<br />for your decision
-            </span>
-            <span style={{ fontFamily: FB, fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>
-              Swipe right to apply · left to skip
-            </span>
-          </Col>
-          {/* Visual swipe card stack */}
-          <div style={{ position: "relative", width: 64, height: 80, flexShrink: 0 }}>
-            {[2, 1, 0].map(i => (
-              <div key={i} style={{
-                position: "absolute", width: 52, height: 70,
-                background: i === 0 ? "rgba(255,122,26,0.2)" : i === 1 ? "rgba(255,122,26,0.1)" : "rgba(255,122,26,0.05)",
-                border: `1px solid rgba(255,122,26,${0.15 - i * 0.04})`,
-                borderRadius: 14,
-                top: i * 5, left: i * 4,
-                transform: `rotate(${i === 1 ? 6 : i === 2 ? 12 : 0}deg)`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                {i === 0 && <Svg d={IC.swipe} s={20} c={t.orange} />}
-              </div>
-            ))}
-          </div>
-        </Row>
-        {/* CTA button */}
-        <button onClick={e => { e.stopPropagation(); setShowSwipe(true); }} style={{
-          marginTop: 16, width: "100%", height: 42, borderRadius: 13,
-          background: t.orange, border: "none", color: "#fff",
-          fontFamily: FB, fontSize: 14, fontWeight: 800, cursor: "pointer",
-          position: "relative", zIndex: 1,
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-          boxShadow: `0 4px 16px rgba(255,122,26,0.3)`,
-        }}>
-          <Svg d={IC.swipe} s={16} c="#fff" />
-          Start Swiping
-        </button>
-      </div>
-
-      {/* Horizontal job cards — ref: meditation "practice of day" scroll cards */}
-      <div style={{ display: "flex", gap: 12, padding: "0 22px 20px", overflowX: "auto" }}>
-        {jobs.map((j, i) => (
-          <div key={i} style={{ background: t.s2, borderRadius: t.r, padding: 16, minWidth: 188, border: `1px solid ${t.border}`, flexShrink: 0 }}>
-            <Row g={10} ai="center" sx={{ marginBottom: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 14, background: t.s3, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 18, color: t.orange }}>{j.ch}</span>
-              </div>
-              <Col g={2} sx={{ flex: 1 }}>
-                <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 13, color: t.t1, lineHeight: 1.3 }}>{j.role}</span>
-                <span style={{ fontFamily: FB, fontSize: 11, color: t.t2 }}>{j.co} · {j.loc}</span>
-              </Col>
-            </Row>
-            <Row g={5} sx={{ flexWrap: "wrap", marginBottom: 12 }}>
-              {j.tags.map(tg => <span key={tg} style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: t.orange, background: t.orangeLo, padding: "3px 9px", borderRadius: 100 }}>{tg}</span>)}
-              <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: T.c.green, background: `${T.c.green}15`, padding: "3px 9px", borderRadius: 100 }}>{j.pay}</span>
-            </Row>
-            <Row ai="center" jc="space-between">
-              <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 700, color: t.orange, background: t.orangeLo, padding: "4px 10px", borderRadius: 8 }}>{j.match}%</span>
-              <button style={{ height: 30, padding: "0 14px", borderRadius: 100, background: t.orange, border: "none", color: "#fff", fontFamily: FB, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Apply</button>
-            </Row>
-          </div>
-        ))}
-      </div>
-
-      {/* News strip — compact list ref: skincare routine list */}
-      <Row ai="center" jc="space-between" sx={{ padding: "0 22px 10px" }}>
-        <span style={{ fontFamily: FD, fontWeight: 700, fontSize: 17, color: t.t1 }}>Tech Pulse ⚡</span>
-        <span style={{ fontFamily: FB, fontSize: 12, color: t.orange, fontWeight: 600 }}>More →</span>
-      </Row>
-      {[
-        { h: "Anthropic raises $2B — AI talent demand surges across India", src: "TechCrunch", time: "2h" },
-        { h: "Top 10 skills hiring managers want in 2025 interns", src: "Forbes", time: "5h" },
-      ].map((n, i) => (
-        <div key={i} style={{ margin: "0 22px 10px", display: "flex", gap: 12, padding: "12px 14px", background: t.s2, borderRadius: 16, border: `1px solid ${t.border}`, alignItems: "center" }}>
-          <div style={{ width: 46, height: 46, borderRadius: 13, background: t.s3, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <Svg d={IC.zap} s={20} c={t.orange} />
-          </div>
-          <Col g={4} sx={{ flex: 1 }}>
-            <span style={{ fontFamily: FB, fontWeight: 600, fontSize: 13, color: t.t1, lineHeight: 1.4 }}>{n.h}</span>
-            <Row g={8}>
-              <span style={{ fontFamily: FB, fontSize: 10, fontWeight: 700, color: t.orange, background: t.orangeLo, padding: "2px 7px", borderRadius: 100 }}>{n.src}</span>
-              <span style={{ fontFamily: FB, fontSize: 10, color: t.t3 }}>{n.time} ago</span>
-            </Row>
-          </Col>
-        </div>
-      ))}
-      <div style={{ height: 24 }} />
+        <div style={{ height: 24 }} />
       </Col>
     </>
   );
 };
 
-/* ── CAREER JOBS ── ref: Explore screen large list items */
-const CareerJobs = ({ mode, onToggle }) => {
-  const t = T.c;
-  const [tab, setTab] = useState("Internships");
-  const [viewMode, setViewMode] = useState("list"); // "list" | "swipe"
-  const jobs = [
-    { role: "Frontend Dev Intern", co: "Zepto", loc: "Remote", pay: "₹15K/mo", tags: ["React", "TypeScript"], m: 94, ch: "Z", saved: false },
-    { role: "Backend Developer", co: "Razorpay", loc: "Bengaluru · Hybrid", pay: "₹18K/mo", tags: ["Node.js", "MongoDB"], m: 88, ch: "R", saved: true },
-    { role: "UI/UX Designer", co: "Groww", loc: "Remote", pay: "₹20K/mo", tags: ["Figma", "Prototyping"], m: 85, ch: "G", saved: false },
-    { role: "Data Analyst", co: "Meesho", loc: "Noida · On-site", pay: "₹12K/mo", tags: ["Python", "SQL"], m: 79, ch: "M", saved: false },
-  ];
+/* ═══════════════════════════════════════════════════════════════════════
+   ░░░ JOBS MODULE — Shared Data & Utilities ░░░
+═══════════════════════════════════════════════════════════════════════ */
 
-  if (viewMode === "swipe") return <SwipeScreen onClose={() => setViewMode("list")} />;
+const ALL_JOBS = [
+  {
+    id: "j1", role: "Frontend Dev Intern", co: "Zepto", loc: "Remote", locType: "Remote", pay: "₹15K/mo", payNum: 15, tags: ["React", "TypeScript"], m: 94, ch: "Z",
+    type: "Internship", grad: "linear-gradient(145deg, #1C0D00, #2D1600)", accentGrad: "linear-gradient(90deg,#FF7A1A,#FF9A45)",
+    desc: "Build and ship features used by 10M+ users. Fast-paced, high-ownership culture. Strong mentorship from senior engineers."
+  },
+  {
+    id: "j2", role: "Backend Developer", co: "Razorpay", loc: "Bengaluru · Hybrid", locType: "Hybrid", pay: "₹18K/mo", payNum: 18, tags: ["Node.js", "MongoDB"], m: 88, ch: "R",
+    type: "Internship", grad: "linear-gradient(145deg, #00101A, #001C2E)", accentGrad: "linear-gradient(90deg,#3B82F6,#60A5FA)",
+    desc: "Work on payment infrastructure serving 8M+ businesses. Real ownership, real impact. Pre-placement offer possible."
+  },
+  {
+    id: "j3", role: "UI/UX Designer", co: "Groww", loc: "Remote", locType: "Remote", pay: "₹20K/mo", payNum: 20, tags: ["Figma", "Prototyping"], m: 85, ch: "G",
+    type: "Internship", grad: "linear-gradient(145deg, #001A0D, #002E1A)", accentGrad: "linear-gradient(90deg,#22C55E,#4ADE80)",
+    desc: "Own end-to-end design for new investor features. Work directly with PMs. Portfolio-building opportunity."
+  },
+  {
+    id: "j4", role: "Data Analyst", co: "Meesho", loc: "Noida · On-site", locType: "On-site", pay: "₹12K/mo", payNum: 12, tags: ["Python", "SQL"], m: 79, ch: "M",
+    type: "Internship", grad: "linear-gradient(145deg, #120018, #1E0028)", accentGrad: "linear-gradient(90deg,#A855F7,#C084FC)",
+    desc: "Analyze seller and buyer behavior data. Build dashboards used by leadership. Strong data team culture."
+  },
+  {
+    id: "j5", role: "React Native Dev", co: "CRED", loc: "Bengaluru · Hybrid", locType: "Hybrid", pay: "₹30K/mo", payNum: 30, tags: ["React Native", "TypeScript"], m: 91, ch: "C",
+    type: "Job", grad: "linear-gradient(145deg, #1A1000, #2D1E00)", accentGrad: "linear-gradient(90deg,#F59E0B,#FBBF24)",
+    desc: "Build consumer mobile experiences for millions of premium users. High design bar and engineering excellence culture."
+  },
+  {
+    id: "j6", role: "DevOps Engineer", co: "Swiggy", loc: "Remote", locType: "Remote", pay: "₹35K/mo", payNum: 35, tags: ["AWS", "Docker", "CI/CD"], m: 82, ch: "S",
+    type: "Job", grad: "linear-gradient(145deg, #0D1A00, #1E2D00)", accentGrad: "linear-gradient(90deg,#84CC16,#A3E635)",
+    desc: "Manage infrastructure at scale for India's largest food delivery platform. On-call rotation with generous comp."
+  },
+];
+
+/* ── Utility functions ── */
+const applyFilters = (jobs, filters) => {
+  return jobs.filter(j => {
+    if (filters.jobType && j.type !== filters.jobType) return false;
+    if (filters.location && j.locType !== filters.location) return false;
+    if (filters.salaryMin != null && j.payNum < filters.salaryMin) return false;
+    return true;
+  });
+};
+
+/* ── FILTER PANEL — modal overlay ── */
+const FilterPanel = ({ filters, setFilters, onClose }) => {
+  const t = T.c;
+  const [local, setLocal] = useState({ ...filters });
+  const activeCount = [local.jobType, local.location, local.salaryMin].filter(Boolean).length;
+
+  const Chip = ({ label, active, onClick }) => (
+    <button onClick={onClick} style={{
+      padding: "7px 14px", borderRadius: 100,
+      background: active ? t.orange : t.s2, border: `1px solid ${active ? t.orange : t.border}`,
+      color: active ? "#fff" : t.t2, fontFamily: FB, fontSize: 12, fontWeight: 700, cursor: "pointer",
+    }}>{label}</button>
+  );
+
+  return (
+    <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", flexDirection: "column" }}>
+      {/* Backdrop */}
+      <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }} />
+      {/* Panel */}
+      <div style={{ position: "relative", marginTop: "auto", background: t.s1, borderRadius: "24px 24px 0 0", padding: "20px 22px 28px", zIndex: 1 }}>
+        <Row ai="center" jc="space-between" sx={{ marginBottom: 20 }}>
+          <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 20, color: t.t1 }}>Filters {activeCount > 0 && <span style={{ fontFamily: FB, fontSize: 12, color: t.orange }}>({activeCount})</span>}</span>
+          <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: 12, background: t.s2, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <Svg d={IC.x} s={14} c={t.t2} />
+          </button>
+        </Row>
+
+        {/* Job Type */}
+        <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 12, color: t.t2, letterSpacing: 1, display: "block", marginBottom: 8 }}>JOB TYPE</span>
+        <Row g={8} sx={{ marginBottom: 18 }}>
+          <Chip label="All" active={!local.jobType} onClick={() => setLocal(s => ({ ...s, jobType: null }))} />
+          <Chip label="Internship" active={local.jobType === "Internship"} onClick={() => setLocal(s => ({ ...s, jobType: s.jobType === "Internship" ? null : "Internship" }))} />
+          <Chip label="Job" active={local.jobType === "Job"} onClick={() => setLocal(s => ({ ...s, jobType: s.jobType === "Job" ? null : "Job" }))} />
+        </Row>
+
+        {/* Location */}
+        <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 12, color: t.t2, letterSpacing: 1, display: "block", marginBottom: 8 }}>LOCATION</span>
+        <Row g={8} sx={{ marginBottom: 18, flexWrap: "wrap" }}>
+          {["All", "Remote", "Hybrid", "On-site"].map(loc => (
+            <Chip key={loc} label={loc} active={loc === "All" ? !local.location : local.location === loc}
+              onClick={() => setLocal(s => ({ ...s, location: loc === "All" || s.location === loc ? null : loc }))} />
+          ))}
+        </Row>
+
+        {/* Salary */}
+        <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 12, color: t.t2, letterSpacing: 1, display: "block", marginBottom: 8 }}>MIN STIPEND</span>
+        <Row g={8} sx={{ marginBottom: 22, flexWrap: "wrap" }}>
+          {[["Any", null], ["₹15K+", 15], ["₹20K+", 20], ["₹30K+", 30]].map(([label, val]) => (
+            <Chip key={label} label={label} active={local.salaryMin === val}
+              onClick={() => setLocal(s => ({ ...s, salaryMin: s.salaryMin === val ? null : val }))} />
+          ))}
+        </Row>
+
+        {/* Actions */}
+        <Row g={10}>
+          <button onClick={() => { setLocal({ jobType: null, location: null, salaryMin: null }); }} style={{
+            flex: 1, height: 46, borderRadius: 14, background: t.s2, border: `1px solid ${t.border}`,
+            color: t.t2, fontFamily: FB, fontSize: 14, fontWeight: 700, cursor: "pointer",
+          }}>Reset</button>
+          <button onClick={() => { setFilters(local); onClose(); }} style={{
+            flex: 1, height: 46, borderRadius: 14, background: t.orange, border: "none",
+            color: "#fff", fontFamily: FB, fontSize: 14, fontWeight: 800, cursor: "pointer",
+            boxShadow: `0 4px 16px rgba(255,122,26,0.3)`,
+          }}>Apply Filters</button>
+        </Row>
+      </div>
+    </div>
+  );
+};
+
+/* ── CAREER JOBS ── */
+const CareerJobs = ({ mode, onToggle, jobState, setJobState }) => {
+  const t = T.c;
+  const [filters, setFilters] = useState({ jobType: null, location: null, salaryMin: null });
+  const [showFilters, setShowFilters] = useState(false);
+  const [showSaved, setShowSaved] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  const [bmarkFlash, setBmarkFlash] = useState(null);
+  const [actionFlash, setActionFlash] = useState(null);
+
+  const dragRef = useRef({ idx: null, startX: 0, startY: 0, locked: false, dragging: false });
+  const [dragVis, setDragVis] = useState({ idx: null, dx: 0 });
+  const lastTapTime = useRef({});
+  const tapTimerRef = useRef({});
+
+  /* ── derived lists ── */
+  const acceptedSet = new Set(jobState.acceptedIds);
+  const rejectedSet = new Set(jobState.rejectedIds);
+  const bookmarkedSet = new Set(jobState.bookmarkedIds);
+  const activeJobs = ALL_JOBS.filter(j => !acceptedSet.has(j.id) && !rejectedSet.has(j.id));
+  const filteredActive = applyFilters(activeJobs, filters);
+  const acceptedJobs = ALL_JOBS.filter(j => acceptedSet.has(j.id));
+  const rejectedJobs = ALL_JOBS.filter(j => rejectedSet.has(j.id));
+  const savedJobs = ALL_JOBS.filter(j => bookmarkedSet.has(j.id));
+  const activeFilterCount = [filters.jobType, filters.location, filters.salaryMin].filter(Boolean).length;
+
+  /* ── state mutation helpers ── */
+  const moveJobToAccepted = (id) => {
+    setJobState(s => ({
+      ...s,
+      acceptedIds: [...s.acceptedIds.filter(x => x !== id), id],
+      rejectedIds: s.rejectedIds.filter(x => x !== id),
+    }));
+  };
+  const moveJobToRejected = (id) => {
+    setJobState(s => ({
+      ...s,
+      rejectedIds: [...s.rejectedIds.filter(x => x !== id), id],
+      acceptedIds: s.acceptedIds.filter(x => x !== id),
+    }));
+  };
+  const toggleBookmark = (id) => {
+    setJobState(s => ({
+      ...s,
+      bookmarkedIds: s.bookmarkedIds.includes(id) ? s.bookmarkedIds.filter(x => x !== id) : [...s.bookmarkedIds, id],
+    }));
+    setBmarkFlash(id);
+    setTimeout(() => setBmarkFlash(null), 700);
+  };
+
+  /* ── swipe handlers (on active cards only) ── */
+  const onPtrDown = (e, idx) => { dragRef.current = { idx, startX: e.clientX, startY: e.clientY, locked: false, dragging: true }; setDragVis({ idx, dx: 0 }); };
+  const onPtrMove = (e, idx) => {
+    const d = dragRef.current; if (!d.dragging || d.idx !== idx) return;
+    const dx = e.clientX - d.startX, dy = e.clientY - d.startY;
+    if (!d.locked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) { if (Math.abs(dy) > Math.abs(dx)) { dragRef.current = { ...d, dragging: false }; setDragVis({ idx: null, dx: 0 }); return; } dragRef.current.locked = true; }
+    if (d.locked) setDragVis({ idx, dx });
+  };
+  const onPtrUp = (e, idx, jobId) => {
+    const d = dragRef.current; if (d.idx !== idx) return;
+    const wasDrag = d.locked; const dx = dragVis.idx === idx ? dragVis.dx : 0;
+    dragRef.current = { idx: null, startX: 0, startY: 0, locked: false, dragging: false }; setDragVis({ idx: null, dx: 0 });
+    if (wasDrag && Math.abs(dx) > 80) {
+      if (dx > 0) moveJobToAccepted(jobId); else moveJobToRejected(jobId);
+      setActionFlash({ id: jobId, action: dx > 0 ? "apply" : "skip" }); setTimeout(() => setActionFlash(null), 700);
+    } else if (!wasDrag) { handleTap(jobId); }
+  };
+  const onPtrLeave = (idx) => { if (dragRef.current.idx === idx) { dragRef.current = { idx: null, startX: 0, startY: 0, locked: false, dragging: false }; setDragVis({ idx: null, dx: 0 }); } };
+
+  /* ── tap / double-tap ── */
+  const handleTap = (id) => {
+    const now = Date.now(); const last = lastTapTime.current[id] || 0;
+    if (now - last < 300) { clearTimeout(tapTimerRef.current[id]); lastTapTime.current[id] = 0; toggleBookmark(id); }
+    else { lastTapTime.current[id] = now; tapTimerRef.current[id] = setTimeout(() => setSelectedJobId(id), 300); }
+  };
+
+  /* ── detail view action ── */
+  const handleDetailAction = (action) => {
+    if (action === "apply") moveJobToAccepted(selectedJobId);
+    else if (action === "skip") moveJobToRejected(selectedJobId);
+    setSelectedJobId(null);
+  };
+
+  /* ── detail view (reuses SwipeScreen) ── */
+  if (selectedJobId) {
+    const j = ALL_JOBS.find(x => x.id === selectedJobId);
+    if (j) return <SwipeScreen cards={[{ ...j, match: j.m }]} onClose={() => setSelectedJobId(null)} onAction={handleDetailAction} />;
+  }
+
+  /* ── Compact card for accepted/rejected sections ── */
+  const MiniCard = ({ j, accent }) => (
+    <Row g={10} ai="center" sx={{ padding: "10px 14px", background: t.s2, borderRadius: 14, border: `1px solid ${t.border}`, marginBottom: 6 }}>
+      <div style={{ width: 38, height: 38, borderRadius: 12, background: t.s3, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 15, color: accent }}>{j.ch}</span>
+      </div>
+      <Col g={1} sx={{ flex: 1, minWidth: 0 }}>
+        <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 13, color: t.t1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.role}</span>
+        <span style={{ fontFamily: FB, fontSize: 11, color: t.t2 }}>{j.co} · {j.loc}</span>
+      </Col>
+      <span style={{ fontFamily: FB, fontSize: 10, fontWeight: 700, color: accent, background: `${accent}18`, padding: "3px 8px", borderRadius: 8, flexShrink: 0 }}>{j.type}</span>
+    </Row>
+  );
+
+  /* ── which list to show ── */
+  const displayJobs = showSaved ? savedJobs : filteredActive;
 
   return (
     <>
@@ -678,66 +904,133 @@ const CareerJobs = ({ mode, onToggle }) => {
             <Svg d={IC.search} s={15} c={t.t2} />
             <span style={{ fontFamily: FB, fontSize: 13, color: t.t3 }}>Search roles, companies, skills...</span>
           </div>
-          {/* View mode toggle + tabs */}
-          <Row ai="center" jc="space-between" sx={{ marginBottom: 0 }}>
-            <Row g={8}>
-              {["Internships", "Jobs", "Saved"].map(tb => (
-                <button key={tb} onClick={() => setTab(tb)} style={{
-                  padding: "7px 14px", borderRadius: 100,
-                  background: tab === tb ? t.orange : t.s2,
-                  border: `1px solid ${tab === tb ? t.orange : t.border}`,
-                  color: tab === tb ? "#fff" : t.t2,
-                  fontFamily: FB, fontSize: 12, fontWeight: 700, cursor: "pointer",
-                }}>{tb}</button>
-              ))}
-            </Row>
-            {/* Swipe mode toggle — icon button */}
-            <button onClick={() => setViewMode("swipe")} style={{
-              height: 34, padding: "0 12px", borderRadius: 10,
-              background: t.orangeLo, border: `1px solid ${t.orange}33`,
-              display: "flex", alignItems: "center", gap: 6, cursor: "pointer",
+          {/* Filters + Saved */}
+          <Row g={8}>
+            <button onClick={() => setShowFilters(true)} style={{
+              height: 36, padding: "0 14px", borderRadius: 100, display: "flex", alignItems: "center", gap: 6, cursor: "pointer",
+              background: activeFilterCount > 0 ? t.orangeLo : t.s2, border: `1px solid ${activeFilterCount > 0 ? t.orange + "44" : t.border}`,
             }}>
-              <Svg d={IC.swipe} s={13} c={t.orange} />
-              <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 800, color: t.orange }}>Swipe</span>
+              <Svg d={IC.menu} s={13} c={activeFilterCount > 0 ? t.orange : t.t2} />
+              <span style={{ fontFamily: FB, fontSize: 12, fontWeight: 700, color: activeFilterCount > 0 ? t.orange : t.t2 }}>Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}</span>
+            </button>
+            <button onClick={() => setShowSaved(s => !s)} style={{
+              height: 36, padding: "0 14px", borderRadius: 100, display: "flex", alignItems: "center", gap: 5, cursor: "pointer",
+              background: showSaved ? t.orangeLo : t.s2, border: `1px solid ${showSaved ? t.orange + "44" : t.border}`,
+            }}>
+              <Svg d={IC.bmark} s={13} c={showSaved ? t.orange : t.t2} w={2} fill={showSaved ? t.orange : "none"} />
+              <span style={{ fontFamily: FB, fontSize: 12, fontWeight: 700, color: showSaved ? t.orange : t.t2 }}>Saved ({savedJobs.length})</span>
             </button>
           </Row>
         </div>
 
-        {/* Job list */}
-        <Col g={2} sx={{ padding: "0 22px 24px" }}>
-        {jobs.map((j, i) => (
-          <div key={i} style={{ background: t.s2, borderRadius: t.r, padding: 16, border: `1px solid ${t.border}`, marginBottom: 10 }}>
-            <Row g={14} ai="flex-start" sx={{ marginBottom: 12 }}>
-              <div style={{ width: 56, height: 56, borderRadius: 17, background: t.s3, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <span style={{ fontFamily: FD, fontWeight: 900, fontSize: 22, color: t.orange }}>{j.ch}</span>
-              </div>
-              <Col g={3} sx={{ flex: 1 }}>
-                <Row ai="flex-start" jc="space-between">
-                  <Col g={2}>
-                    <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 15, color: t.t1 }}>{j.role}</span>
-                    <span style={{ fontFamily: FB, fontSize: 12, color: t.t2 }}>{j.co} · {j.loc}</span>
+        {/* ── Active / Saved job list ── */}
+        <Col g={2} sx={{ padding: "0 22px 16px" }}>
+          {showSaved && savedJobs.length === 0 && (
+            <div style={{ textAlign: "center", padding: "32px 0" }}>
+              <Svg d={IC.bmark} s={32} c={t.t3} />
+              <span style={{ fontFamily: FB, fontSize: 13, color: t.t3, display: "block", marginTop: 8 }}>No saved jobs yet. Double-tap to bookmark.</span>
+            </div>
+          )}
+          {!showSaved && filteredActive.length === 0 && (
+            <div style={{ textAlign: "center", padding: "32px 0" }}>
+              <Svg d={IC.search} s={32} c={t.t3} />
+              <span style={{ fontFamily: FB, fontSize: 13, color: t.t3, display: "block", marginTop: 8 }}>No jobs match filters. Try resetting.</span>
+            </div>
+          )}
+          {displayJobs.map((j, i) => {
+            const isActive = dragVis.idx === i && !showSaved;
+            const dx = isActive ? dragVis.dx : 0;
+            const isSaved = bookmarkedSet.has(j.id);
+            const flash = actionFlash && actionFlash.id === j.id ? actionFlash.action : null;
+            const bFlash = bmarkFlash === j.id;
+            return (
+              <div key={j.id}
+                {...(!showSaved ? { onPointerDown: e => onPtrDown(e, i), onPointerMove: e => onPtrMove(e, i), onPointerUp: e => onPtrUp(e, i, j.id), onPointerLeave: () => onPtrLeave(i) } : { onClick: () => setSelectedJobId(j.id) })}
+                style={{
+                  background: t.s2, borderRadius: t.r, padding: 16, position: "relative", overflow: "hidden",
+                  border: `1px solid ${flash === "apply" ? T.c.green + "66" : flash === "skip" ? T.c.red + "66" : t.border}`,
+                  marginBottom: 10,
+                  transform: `translateX(${dx}px) scale(${bFlash ? 0.96 : 1})`,
+                  transition: isActive ? "none" : "transform 0.3s cubic-bezier(0.34,1.56,0.64,1), border-color 0.3s",
+                  cursor: isActive ? "grabbing" : "pointer", userSelect: "none", touchAction: "pan-y",
+                }}
+              >
+                {dx > 20 && <div style={{ position: "absolute", inset: 0, background: `rgba(34,197,94,${Math.min(dx / 250, 0.2)})`, borderRadius: t.r, pointerEvents: "none", zIndex: 5 }} />}
+                {dx < -20 && <div style={{ position: "absolute", inset: 0, background: `rgba(239,68,68,${Math.min(-dx / 250, 0.2)})`, borderRadius: t.r, pointerEvents: "none", zIndex: 5 }} />}
+                {dx > 50 && <div style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", zIndex: 6, opacity: Math.min((dx - 50) / 40, 1) }}><span style={{ fontFamily: FD, fontWeight: 900, fontSize: 13, color: T.c.green, letterSpacing: 1 }}>ACCEPT ✓</span></div>}
+                {dx < -50 && <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", zIndex: 6, opacity: Math.min((-dx - 50) / 40, 1) }}><span style={{ fontFamily: FD, fontWeight: 900, fontSize: 13, color: T.c.red, letterSpacing: 1 }}>REJECT ✗</span></div>}
+                {flash && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10, pointerEvents: "none" }}>
+                  <div style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(4px)", borderRadius: 14, padding: "8px 18px", border: `2px solid ${flash === "apply" ? T.c.green : T.c.red}55` }}>
+                    <span style={{ fontFamily: FD, fontWeight: 900, fontSize: 16, color: flash === "apply" ? T.c.green : T.c.red, letterSpacing: 1 }}>{flash === "apply" ? "ACCEPTED ✓" : "REJECTED ✗"}</span>
+                  </div>
+                </div>}
+                {bFlash && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10, pointerEvents: "none" }}>
+                  <div style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(4px)", borderRadius: 14, padding: "8px 16px", display: "flex", alignItems: "center", gap: 6 }}>
+                    <Svg d={IC.bmark} s={16} c={isSaved ? t.orange : t.t2} w={2.2} fill={isSaved ? t.orange : "none"} />
+                    <span style={{ fontFamily: FB, fontSize: 12, fontWeight: 800, color: "#fff" }}>{isSaved ? "Saved ★" : "Unsaved"}</span>
+                  </div>
+                </div>}
+                <Row g={14} ai="flex-start" sx={{ marginBottom: 12, position: "relative", zIndex: 1 }}>
+                  <div style={{ width: 56, height: 56, borderRadius: 17, background: t.s3, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <span style={{ fontFamily: FD, fontWeight: 900, fontSize: 22, color: t.orange }}>{j.ch}</span>
+                  </div>
+                  <Col g={3} sx={{ flex: 1 }}>
+                    <Row ai="flex-start" jc="space-between">
+                      <Col g={2}>
+                        <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 15, color: t.t1 }}>{j.role}</span>
+                        <span style={{ fontFamily: FB, fontSize: 12, color: t.t2 }}>{j.co} · {j.loc}</span>
+                      </Col>
+                      <Row g={6}>
+                        {isSaved && <Svg d={IC.bmark} s={14} c={t.orange} w={2} fill={t.orange} />}
+                        <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 700, color: t.orange, background: t.orangeLo, padding: "4px 9px", borderRadius: 8, flexShrink: 0 }}>{j.m}%</span>
+                      </Row>
+                    </Row>
                   </Col>
-                  <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 700, color: t.orange, background: t.orangeLo, padding: "4px 9px", borderRadius: 8, flexShrink: 0 }}>{j.m}%</span>
                 </Row>
-              </Col>
-            </Row>
-            <Row g={6} sx={{ flexWrap: "wrap", marginBottom: 14 }}>
-              {j.tags.map(tg => <span key={tg} style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: t.orange, background: t.orangeLo, padding: "3px 9px", borderRadius: 100 }}>{tg}</span>)}
-              <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: T.c.green, background: `${T.c.green}15`, padding: "3px 9px", borderRadius: 100 }}>{j.pay}</span>
-            </Row>
-            <Row g={10}>
-              <button style={{ flex: 1, height: 42, borderRadius: 13, background: t.orange, border: "none", color: "#fff", fontFamily: FB, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Apply Now</button>
-              <button style={{ width: 42, height: 42, borderRadius: 13, background: j.saved ? t.orangeLo : t.s3, border: `1px solid ${j.saved ? t.orange + "44" : t.border}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                <Svg d={IC.bmark} s={16} c={j.saved ? t.orange : t.t2} />
-              </button>
-            </Row>
-          </div>
-        ))}
+                <Row g={6} sx={{ flexWrap: "wrap", position: "relative", zIndex: 1 }}>
+                  {j.tags.map(tg => <span key={tg} style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: t.orange, background: t.orangeLo, padding: "3px 9px", borderRadius: 100 }}>{tg}</span>)}
+                  <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: T.c.green, background: `${T.c.green}15`, padding: "3px 9px", borderRadius: 100 }}>{j.pay}</span>
+                  <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 600, color: t.t3, background: t.s3, padding: "3px 9px", borderRadius: 100 }}>{j.type}</span>
+                </Row>
+              </div>
+            );
+          })}
         </Col>
+
+        {/* ── Accepted section ── */}
+        {!showSaved && acceptedJobs.length > 0 && (
+          <Col sx={{ padding: "0 22px 16px" }}>
+            <Row g={6} ai="center" sx={{ marginBottom: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 4, background: T.c.green }} />
+              <span style={{ fontFamily: FD, fontWeight: 700, fontSize: 15, color: t.t1 }}>Accepted</span>
+              <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 700, color: T.c.green, background: `${T.c.green}18`, padding: "2px 8px", borderRadius: 100 }}>{acceptedJobs.length}</span>
+            </Row>
+            {acceptedJobs.map(j => <MiniCard key={j.id} j={j} accent={T.c.green} />)}
+          </Col>
+        )}
+
+        {/* ── Rejected section ── */}
+        {!showSaved && rejectedJobs.length > 0 && (
+          <Col sx={{ padding: "0 22px 16px" }}>
+            <Row g={6} ai="center" sx={{ marginBottom: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 4, background: T.c.red }} />
+              <span style={{ fontFamily: FD, fontWeight: 700, fontSize: 15, color: t.t1 }}>Rejected</span>
+              <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 700, color: T.c.red, background: `${T.c.red}18`, padding: "2px 8px", borderRadius: 100 }}>{rejectedJobs.length}</span>
+            </Row>
+            {rejectedJobs.map(j => <MiniCard key={j.id} j={j} accent={T.c.red} />)}
+          </Col>
+        )}
+
+        <div style={{ height: 24 }} />
       </Col>
+
+      {/* ── Filter panel overlay ── */}
+      {showFilters && <FilterPanel filters={filters} setFilters={setFilters} onClose={() => setShowFilters(false)} />}
     </>
   );
 };
+
+
 
 /* ── CAREER CHAT ── */
 const CareerChat = ({ mode, onToggle }) => {
@@ -1380,6 +1673,9 @@ export default function HYRUPApp() {
   const [sTab, setSTab] = useState("feed");
   const [fading, setFading] = useState(false);
 
+  /* ── lifted job state — persists across tab switches ── */
+  const [jobState, setJobState] = useState({ acceptedIds: [], rejectedIds: [], bookmarkedIds: [] });
+
   const toggleMode = () => {
     setFading(true);
     setTimeout(() => { setMode(m => m === "career" ? "social" : "career"); setFading(false); }, 160);
@@ -1391,8 +1687,8 @@ export default function HYRUPApp() {
 
   const renderScreen = () => {
     if (isC) {
-      if (cTab === "home") return <CareerHome {...p} />;
-      if (cTab === "jobs") return <CareerJobs {...p} />;
+      if (cTab === "home") return <CareerHome {...p} appliedCount={jobState.acceptedIds.length} />;
+      if (cTab === "jobs") return <CareerJobs {...p} jobState={jobState} setJobState={setJobState} />;
       if (cTab === "chat") return <CareerChat {...p} />;
       if (cTab === "news") return <CareerNews {...p} />;
       if (cTab === "profile") return <CareerProfile {...p} />;
