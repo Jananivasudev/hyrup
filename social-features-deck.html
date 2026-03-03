@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYRUP Social Mode — Feature Deck</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=DM+Sans:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0A0A0A;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 64px 90px 90px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .slide-light {
+            background: #F8F7F5;
+        }
+
+        .slide-dark {
+            background: #0A0A0A;
+            color: #fff;
+        }
+
+        .slide-accent {
+            background: linear-gradient(145deg, #FF5722, #FF8A50);
+            color: #fff;
+        }
+
+        .slide-num {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .slide h1 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+        }
+
+        .slide h2 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .slide .subtitle {
+            font-size: 20px;
+            max-width: 600px;
+            line-height: 1.6;
+            opacity: 0.7;
+        }
+
+        .slide .small-sub {
+            font-size: 16px;
+            max-width: 550px;
+            line-height: 1.7;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
+        .highlight {
+            color: #FF5722;
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .badge-accent {
+            background: rgba(255, 87, 34, 0.12);
+            color: #FF5722;
+        }
+
+        .badge-white {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Feature grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            max-width: 700px;
+            margin-top: 24px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 22px;
+        }
+
+        .feature-card.light {
+            background: #fff;
+            border: 1px solid #E8E4DC;
+        }
+
+        .feature-card .emoji {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-weight: 800;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            opacity: 0.6;
+            line-height: 1.5;
+        }
+
+        /* Detail list */
+        .detail-list {
+            list-style: none;
+            margin-top: 20px;
+            max-width: 650px;
+        }
+
+        .detail-list li {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .detail-list li .label {
+            font-weight: 800;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .detail-list.light li {
+            border-bottom-color: #E8E4DC;
+            color: #111;
+        }
+
+        /* Swipe table */
+        .swipe-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .swipe-table th {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .swipe-table td {
+            padding: 10px 14px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .swipe-table.light th {
+            border-bottom-color: #E8E4DC;
+            color: #7A746C;
+        }
+
+        .swipe-table.light td {
+            border-bottom-color: #F2F0EC;
+            color: #111;
+        }
+
+        /* Discuss grid */
+        .discuss-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+            max-width: 800px;
+            margin-top: 24px;
+        }
+
+        .discuss-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .discuss-card .q-num {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: #FF5722;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .discuss-card p {
+            font-size: 14px;
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+
+        /* Plan table */
+        .plan-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .plan-table th {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 12px 16px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            text-align: left;
+        }
+
+        .plan-table td {
+            padding: 12px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Nav */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 100;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-bar .brand {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            color: #FF5722;
+        }
+
+        .nav-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav-dots .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: background 0.3s;
+        }
+
+        .nav-dots .dot.active {
+            background: #FF5722;
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btns button {
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-prev {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .btn-next {
+            background: #FF5722;
+            color: #fff;
+        }
+
+        .key-hint {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            font-size: 11px;
+            color: #333;
+            z-index: 100;
+        }
+
+        /* Responsive */
+        .slide {
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 48px 60px 90px;
+            }
+
+            .slide h1 {
+                font-size: 44px;
+            }
+
+            .slide h2 {
+                font-size: 30px;
+            }
+
+            .discuss-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .features-grid {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 36px 28px 90px;
+            }
+
+            .slide h1 {
+                font-size: 34px;
+                letter-spacing: -1px;
+            }
+
+            .slide h2 {
+                font-size: 24px;
+            }
+
+            .slide .subtitle {
+                font-size: 16px;
+                max-width: 100%;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .discuss-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                max-width: 100%;
+            }
+
+            .nav-bar {
+                padding: 12px 20px;
+            }
+
+            .key-hint {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide {
+                padding: 28px 20px 85px;
+            }
+
+            .slide h1 {
+                font-size: 28px;
+            }
+
+            .slide h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide slide-dark active" id="s0">
+        <span class="slide-num">HYRUP · Social Mode</span>
+        <h1>Social Mode<br /><span style="color:#FF5722">Feature Deck</span></h1>
+        <p class="subtitle">Core features, UX flows, and card interactions for the community side of HYRUP.</p>
+        <p class="small-sub">For the UI/UX and product development team · March 2026</p>
+    </div>
+
+    <!-- SLIDE 2: Overview -->
+    <div class="slide slide-light" id="s1">
+        <span class="slide-num" style="color:#7A746C">Overview</span>
+        <h2 style="color:#111">5 Screens <span class="badge badge-accent">Social Mode</span></h2>
+        <div class="features-grid">
+            <div class="feature-card light">
+                <span class="emoji">🏠</span>
+                <h3 style="color:#111">Home Dashboard</h3>
+                <p style="color:#7A746C">Daily challenge, weekly streak, quick-access cards, trending preview</p>
+            </div>
+            <div class="feature-card light">
+                <span class="emoji">📰</span>
+                <h3 style="color:#111">Feed</h3>
+                <p style="color:#7A746C">Full-image stacked swipeable cards. Wins, projects, thoughts</p>
+            </div>
+            <div class="feature-card light">
+                <span class="emoji">🤝</span>
+                <h3 style="color:#111">Connect</h3>
+                <p style="color:#7A746C">Full-photo swipe cards. Tinder-style networking by skills</p>
+            </div>
+            <div class="feature-card light">
+                <span class="emoji">💬</span>
+                <h3 style="color:#111">Chat</h3>
+                <p style="color:#7A746C">Unified inbox — DMs and group chats with filters</p>
+            </div>
+            <div class="feature-card light">
+                <span class="emoji">👤</span>
+                <h3 style="color:#111">Profile</h3>
+                <p style="color:#7A746C">Identity, skill badges, AI Resume, project portfolio</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Home Dashboard Deep Dive -->
+    <div class="slide slide-dark" id="s2">
+        <span class="slide-num">Screen 1</span>
+        <h2>🏠 Home Dashboard</h2>
+        <p class="subtitle">The first screen users see. A personalized hub — not just a feed.</p>
+        <ul class="detail-list" style="margin-top:20px">
+            <li><span class="label" style="color:#FF5722">Greeting</span> "Hi Rahul! 👋" — warm, personal. Mode toggle +
+                bell on right</li>
+            <li><span class="label" style="color:#FF5722">Daily Challenge</span> Full-width hero card (orange gradient).
+                Shows prompt + 🔥 streak counter. CTA: "+ Create Post"</li>
+            <li><span class="label" style="color:#FF5722">Week Activity</span> 7-day row (Mon–Sun). Filled = active,
+                outlined = inactive. Today = orange accent</li>
+            <li><span class="label" style="color:#FF5722">Quick Cards</span> 2×2 grid: New Connections, Active Groups,
+                Trending Win, Study Group. Tap → navigates to tab</li>
+            <li><span class="label" style="color:#FF5722">Feed Preview</span> 2 trending posts in compact list. "See All
+                →" pulls user into Feed</li>
+        </ul>
+    </div>
+
+    <!-- SLIDE 4: Feed Deep Dive -->
+    <div class="slide slide-accent" id="s3">
+        <span class="slide-num" style="opacity:0.6">Screen 2</span>
+        <h2>📰 Feed — Full-Image Cards</h2>
+        <p class="subtitle" style="opacity:0.85">Image fills the entire card. User info at top, content at bottom. 2
+            stacked shadows behind.</p>
+        <table class="swipe-table" style="margin-top:24px">
+            <thead>
+                <tr>
+                    <th style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.2)">Position</th>
+                    <th style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.2)">Content</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Top-left</strong></td>
+                    <td>User avatar (circle) + Name + College — white text on dark gradient</td>
+                </tr>
+                <tr>
+                    <td><strong>Top-right</strong></td>
+                    <td>Post type: "🏆 Win" / "🚀 Project" / "💡 Thought" — glass pill</td>
+                </tr>
+                <tr>
+                    <td><strong>Bottom</strong></td>
+                    <td>Post text (bold 20px) + ❤️ 142 · 💬 28 · 📤 · 🔖</td>
+                </tr>
+                <tr>
+                    <td><strong>Behind</strong></td>
+                    <td>2 stacked shadow cards at 95% and 90% scale for depth</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="swipe-table" style="margin-top:18px">
+            <thead>
+                <tr>
+                    <th style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.2)">Gesture</th>
+                    <th style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.2)">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>← Swipe left</td>
+                    <td>Next post</td>
+                </tr>
+                <tr>
+                    <td>→ Swipe right</td>
+                    <td>Bookmark + toast "🔖 Post Saved!"</td>
+                </tr>
+                <tr>
+                    <td>Tap card</td>
+                    <td>Expand → comments view</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 5: Connect Deep Dive -->
+    <div class="slide slide-dark" id="s4">
+        <span class="slide-num">Screen 3</span>
+        <h2>🤝 Connect — Full-Photo Cards</h2>
+        <p class="subtitle">Profile photo fills the entire card. Info overlaid in white. Like a dating app — but for
+            networking.</p>
+        <table class="swipe-table" style="margin-top:24px">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Content</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Top-left</strong></td>
+                    <td>"Why" badge: "Same domain 🎨" / "Same city 📍" — frosted glass pill</td>
+                </tr>
+                <tr>
+                    <td><strong>Top-right</strong></td>
+                    <td>Level: "Lv 8" — green glass pill</td>
+                </tr>
+                <tr>
+                    <td><strong>Bottom</strong></td>
+                    <td>📍 College → <strong>Name ✦</strong> (26px bold) → Skill pills: "🔹 UI/UX" "🔹 Figma"</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="swipe-table" style="margin-top:18px">
+            <thead>
+                <tr>
+                    <th>Gesture</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>→ Swipe right</td>
+                    <td>Send connection request</td>
+                </tr>
+                <tr>
+                    <td>← Swipe left</td>
+                    <td>Skip to next person</td>
+                </tr>
+                <tr>
+                    <td>Buttons</td>
+                    <td>✗ (red) / ✓ (green) — fallback below card</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size:14px;opacity:0.5;margin-top:16px">Also: <strong>Requests tab</strong> (accept/decline list)
+            · <strong>Nearby tab</strong> (radius filter + distance)</p>
+    </div>
+
+    <!-- SLIDE 6: Chat & Profile -->
+    <div class="slide slide-light" id="s5">
+        <span class="slide-num" style="color:#7A746C">Screens 4 & 5</span>
+        <h2 style="color:#111">💬 Chat · 👤 Profile</h2>
+        <div class="features-grid">
+            <div class="feature-card light">
+                <span class="emoji">💬</span>
+                <h3 style="color:#111">Unified Chat</h3>
+                <p style="color:#7A746C">DMs + Groups in one inbox. Filter tabs: All / DMs / Groups. Groups have emoji
+                    badges (⚡📚🎮). Search bar at top. "+" to create.</p>
+            </div>
+            <div class="feature-card light">
+                <span class="emoji">👤</span>
+                <h3 style="color:#111">Profile</h3>
+                <p style="color:#7A746C">Gradient cover + avatar. Stats: Connections · Posts · Skills · Wins. Verified
+                    skill pills. "✦ AI Resume" button. Tabs: Posts grid / AI Highlights / Bookmarks.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Discussion Points -->
+    <div class="slide slide-dark" id="s6">
+        <span class="slide-num">Discussion</span>
+        <h2>Key Decisions 🤔</h2>
+        <div class="discuss-grid">
+            <div class="discuss-card">
+                <span class="q-num">1</span>
+                <p>Should Feed cards always have images, or support <strong>text-only</strong> posts too?</p>
+            </div>
+            <div class="discuss-card">
+                <span class="q-num">2</span>
+                <p>Connect matching: <strong>algorithmic</strong> (AI-based) or purely <strong>filter-based</strong>?
+                </p>
+            </div>
+            <div class="discuss-card">
+                <span class="q-num">3</span>
+                <p>Daily challenges: system-generated or <strong>peer-suggested</strong>?</p>
+            </div>
+            <div class="discuss-card">
+                <span class="q-num">4</span>
+                <p>Chat SDK: build <strong>in-house</strong> or use Firebase / Stream?</p>
+            </div>
+            <div class="discuss-card">
+                <span class="q-num">5</span>
+                <p>AI features (resume, hashtags) in <strong>v1</strong> or <strong>v2</strong>?</p>
+            </div>
+            <div class="discuss-card">
+                <span class="q-num">6</span>
+                <p>Skill verification: <strong>self-declared</strong>, peer-endorsed, or <strong>test-based</strong>?
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Roadmap -->
+    <div class="slide slide-dark" id="s7">
+        <span class="slide-num">Priority</span>
+        <h2>Roadmap ⛳</h2>
+        <table class="plan-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Priority</th>
+                    <th>Phase</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Home Dashboard</td>
+                    <td style="color:#22C55E">🟢 High</td>
+                    <td>v1</td>
+                    <td>Daily engagement, retention driver</td>
+                </tr>
+                <tr>
+                    <td>Feed (swipe)</td>
+                    <td style="color:#22C55E">🟢 High</td>
+                    <td>v1</td>
+                    <td>Core content experience</td>
+                </tr>
+                <tr>
+                    <td>Connect (swipe)</td>
+                    <td style="color:#22C55E">🟢 High</td>
+                    <td>v1</td>
+                    <td>Core networking UX</td>
+                </tr>
+                <tr>
+                    <td>Chat (DMs)</td>
+                    <td style="color:#22C55E">🟢 High</td>
+                    <td>v1</td>
+                    <td>1:1 messaging needed</td>
+                </tr>
+                <tr>
+                    <td>Profile</td>
+                    <td style="color:#22C55E">🟢 High</td>
+                    <td>v1</td>
+                    <td>Identity & skills</td>
+                </tr>
+                <tr>
+                    <td>Group chat</td>
+                    <td style="color:#F59E0B">🟡 Med</td>
+                    <td>v1.5</td>
+                    <td>After DMs are stable</td>
+                </tr>
+                <tr>
+                    <td>AI Resume</td>
+                    <td style="color:#F59E0B">🟡 Med</td>
+                    <td>v2</td>
+                    <td>Depends on profile data</td>
+                </tr>
+                <tr>
+                    <td>Nearby / Location</td>
+                    <td style="color:#F59E0B">🟡 Med</td>
+                    <td>v2</td>
+                    <td>Needs permissions UX</td>
+                </tr>
+                <tr>
+                    <td>AI Hashtags</td>
+                    <td style="color:#3B82F6">🔵 Low</td>
+                    <td>v2</td>
+                    <td>Nice-to-have, not critical</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- NAV BAR -->
+    <div class="nav-bar">
+        <span class="brand">HYRUP</span>
+        <div class="nav-dots">
+            <span class="dot active" data-i="0"></span>
+            <span class="dot" data-i="1"></span>
+            <span class="dot" data-i="2"></span>
+            <span class="dot" data-i="3"></span>
+            <span class="dot" data-i="4"></span>
+            <span class="dot" data-i="5"></span>
+            <span class="dot" data-i="6"></span>
+            <span class="dot" data-i="7"></span>
+        </div>
+        <div class="nav-btns">
+            <button class="btn-prev" onclick="go(-1)">← Back</button>
+            <button class="btn-next" onclick="go(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let cur = 0;
+        const total = 8;
+        function go(d) {
+            const n = cur + d;
+            if (n < 0 || n >= total) return;
+            document.getElementById('s' + cur).classList.remove('active');
+            cur = n;
+            document.getElementById('s' + cur).classList.add('active');
+            document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === cur));
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === ' ') go(1);
+            if (e.key === 'ArrowLeft') go(-1);
+        });
+    </script>
+</body>
+
+</html>

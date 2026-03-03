@@ -1,136 +1,189 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { T, FD, FB } from '../../tokens.js';
 import { IC, Svg } from '../../icons.jsx';
 import { Row, Col } from '../../helpers.jsx';
 import ModeToggle from '../../components/ModeToggle.jsx';
 
-/* ── SOCIAL FEED ── */
+/* ── SWIPEABLE SOCIAL FEED — STACKED FULL-IMAGE CARDS ── */
 const SocialFeed = ({ mode, onToggle }) => {
     const t = T.s;
     const [filter, setFilter] = useState(0);
-
-    const friends = [
-        { ch: "+", col: t.orange, bg: t.orangeLo, label: "Add" },
-        { ch: "P", col: "#16A34A", bg: "#E8F8EF", label: "Priya K." },
-        { ch: "D", col: "#2563EB", bg: "#EFF6FF", label: "Dev M." },
-        { ch: "A", col: t.orange, bg: t.orangeLo, label: "Ananya" },
-        { ch: "S", col: "#9333EA", bg: "#FAF5FF", label: "Sneha R." },
-    ];
+    const [cardIdx, setCardIdx] = useState(0);
+    const [dragX, setDragX] = useState(0);
+    const [dragging, setDragging] = useState(false);
+    const [swipeAction, setSwipeAction] = useState(null);
+    const startX = useRef(0);
+    const [showCreate, setShowCreate] = useState(false);
 
     const posts = [
-        { user: "Priya K.", college: "NIT Trichy", content: "Just won 1st place at HackIndia 2025! 🏆 Built an AI resume analyzer in 24hrs. Six months of grinding paying off!", type: "🏆 Win", tCol: "#16A34A", tBg: "#E8F8EF", likes: 142, comments: 28, time: "2h", hasImg: true },
-        { user: "Dev M.", college: "VIT Vellore", content: "Shipped my first full-stack project 🚀 Real-time collaborative editor with WebSockets. Open source — link in bio!", type: "🚀 Project", tCol: "#2563EB", tBg: "#EFF6FF", likes: 89, comments: 15, time: "5h", hasImg: false },
+        { user: "Priya K.", college: "NIT Trichy", avatar: "/images/profile_sneha.png", content: "Won 1st place at HackIndia 2025! 🏆 Built an AI resume analyzer in 24hrs.", type: "🏆 Win", likes: 142, comments: 28, time: "2h", postImg: "/images/post_graphic.png" },
+        { user: "Dev M.", college: "VIT Vellore", avatar: "/images/profile_kiran.png", content: "Shipped my first full-stack project 🚀 Real-time collaborative editor with WebSockets.", type: "🚀 Project", likes: 89, comments: 15, time: "5h", postImg: "/images/profile_kiran.png" },
+        { user: "Ananya T.", college: "SRM Chennai", avatar: "/images/profile_ananya.png", content: "Just cleared my AWS Solutions Architect cert! 🎯 3 months of prep, totally worth it.", type: "💡 Thought", likes: 203, comments: 42, time: "8h", postImg: "/images/profile_ananya.png" },
+        { user: "Kiran B.", college: "LPU Punjab", avatar: "/images/profile_kiran.png", content: "Our startup just got accepted into Y Combinator's startup school! 🚀", type: "🏆 Win", likes: 318, comments: 67, time: "1d", postImg: "/images/post_graphic.png" },
     ];
 
+    const current = posts[cardIdx % posts.length];
+
+    const onPointerDown = (e) => {
+        startX.current = e.clientX;
+        setDragging(true);
+        setSwipeAction(null);
+    };
+    const onPointerMove = (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - startX.current;
+        setDragX(dx);
+        if (dx < -40) setSwipeAction("left");
+        else if (dx > 40) setSwipeAction("right");
+        else setSwipeAction(null);
+    };
+    const onPointerUp = () => {
+        setDragging(false);
+        if (Math.abs(dragX) > 80) {
+            if (dragX < 0) {
+                setCardIdx(i => i + 1);
+            } else {
+                setSwipeAction("bookmarked");
+                setTimeout(() => setSwipeAction(null), 600);
+            }
+        }
+        setDragX(0);
+    };
+
     return (
-        <Col>
-            {/* Greeting header */}
-            <div style={{ padding: "10px 22px 16px" }}>
-                <Row ai="flex-start" jc="space-between">
-                    <Col g={2}>
-                        <span style={{ fontFamily: FD, fontWeight: 900, fontSize: 28, color: t.t1, lineHeight: 1.1, letterSpacing: -0.8 }}>
-                            Hi <span style={{ color: t.orange }}>Rahul!</span> 👋<br />
-                            <span style={{ fontFamily: FB, fontWeight: 500, fontSize: 14, color: t.t2, letterSpacing: 0 }}>What are you building today?</span>
-                        </span>
-                    </Col>
-                    <Row g={8} ai="center" sx={{ marginTop: 6 }}>
-                        <ModeToggle mode={mode} onToggle={onToggle} />
-                        <div style={{ width: 38, height: 38, borderRadius: 14, background: t.s1, border: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", position: "relative" }}>
-                            <Svg d={IC.bell} s={17} c={t.t2} />
-                            <div style={{ position: "absolute", top: 9, right: 9, width: 7, height: 7, borderRadius: 4, background: t.orange, border: `1.5px solid ${t.bg}` }} />
-                        </div>
-                    </Row>
+        <Col sx={{ height: "100%", position: "relative" }}>
+            {/* Header */}
+            <div style={{ padding: "10px 22px 14px" }}>
+                <Row ai="center" jc="space-between" sx={{ marginBottom: 14 }}>
+                    <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 24, color: t.t1 }}>Feed ✦</span>
+                    <ModeToggle mode={mode} onToggle={onToggle} />
                 </Row>
-            </div>
-
-            {/* Friend circles */}
-            <div style={{ display: "flex", gap: 14, padding: "0 22px 18px", overflowX: "auto" }}>
-                {friends.map((f, i) => (
-                    <Col key={i} g={5} ai="center" sx={{ flexShrink: 0 }}>
-                        <div style={{ width: 54, height: 54, borderRadius: 27, background: f.bg, border: `2.5px solid ${f.col}44`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 2px 10px ${f.col}25` }}>
-                            <span style={{ fontFamily: FD, fontWeight: 900, fontSize: i === 0 ? 22 : 20, color: f.col }}>{f.ch}</span>
-                        </div>
-                        <span style={{ fontFamily: FB, fontSize: 10, color: t.t2, fontWeight: 500, maxWidth: 52, textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.label}</span>
-                    </Col>
-                ))}
-            </div>
-
-            {/* Filter chips */}
-            <Row g={8} sx={{ padding: "0 22px 16px", overflowX: "auto" }}>
-                {["For You", "My College", "My Domain", "National"].map((f, i) => (
-                    <button key={f} onClick={() => setFilter(i)} style={{
-                        flexShrink: 0, padding: "8px 18px", borderRadius: 100, fontFamily: FB, fontSize: 13, fontWeight: 700,
-                        background: filter === i ? t.t1 : t.s2, color: filter === i ? t.bg : t.t2,
-                        border: `1.5px solid ${filter === i ? t.t1 : t.border}`,
-                        boxShadow: filter === i ? "0 4px 14px rgba(0,0,0,0.12)" : "none",
-                        cursor: "pointer",
-                    }}>{f}</button>
-                ))}
-            </Row>
-
-            {/* Create post */}
-            <div style={{ margin: "0 22px 16px", background: t.s1, borderRadius: 20, padding: "14px 14px 12px", border: `1px solid ${t.border}`, boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
-                <Row g={12} sx={{ marginBottom: 12 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 20, background: `linear-gradient(135deg, ${t.orange}, #FF8A5E)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 16, color: "#fff" }}>R</span>
-                    </div>
-                    <div style={{ flex: 1, height: 40, background: t.s2, borderRadius: 20, padding: "0 16px", display: "flex", alignItems: "center", border: `1px solid ${t.border}` }}>
-                        <span style={{ fontFamily: FB, fontSize: 13, color: t.t3 }}>Share a win, project, or thought... ✨</span>
-                    </div>
-                </Row>
-                <div style={{ height: 1, background: t.border, margin: "0 0 10px" }} />
-                <Row jc="space-around">
-                    {[["📷 Photo", IC.img], ["✦ AI Write", IC.spark], ["# Tag", IC.hash]].map(([l, ic]) => (
-                        <button key={l} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", gap: 5, alignItems: "center" }}>
-                            <Svg d={ic} s={14} c={t.t2} />
-                            <span style={{ fontFamily: FB, fontSize: 11, color: t.t2, fontWeight: 700 }}>{l}</span>
-                        </button>
+                {/* Filter chips */}
+                <Row g={8} sx={{ overflowX: "auto" }}>
+                    {["For You", "My College", "My Domain", "National"].map((f, i) => (
+                        <button key={f} onClick={() => setFilter(i)} style={{
+                            flexShrink: 0, padding: "8px 16px", borderRadius: 100, fontFamily: FB, fontSize: 12, fontWeight: 700,
+                            background: filter === i ? t.t1 : t.s2, color: filter === i ? t.bg : t.t2,
+                            border: `1.5px solid ${filter === i ? t.t1 : t.border}`, cursor: "pointer",
+                            boxShadow: filter === i ? "0 4px 14px rgba(0,0,0,0.12)" : "none",
+                        }}>{f}</button>
                     ))}
                 </Row>
             </div>
 
-            {/* Posts */}
-            {posts.map((p, i) => (
-                <div key={i} style={{ margin: "0 22px 16px", background: t.s1, borderRadius: t.r, padding: 16, border: `1px solid ${t.border}`, boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}>
-                    <Row g={10} ai="flex-start" sx={{ marginBottom: 12 }}>
-                        <div style={{ width: 42, height: 42, borderRadius: 21, background: `${t.orange}18`, border: `2px solid ${t.orange}30`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 16, color: t.orange }}>{p.user[0]}</span>
-                        </div>
-                        <Col g={2} sx={{ flex: 1 }}>
-                            <Row ai="flex-start" jc="space-between">
-                                <Col g={1}>
-                                    <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 14, color: t.t1 }}>{p.user}</span>
-                                    <span style={{ fontFamily: FB, fontSize: 11, color: t.t2 }}>{p.college} · {p.time} ago</span>
-                                </Col>
-                                <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 800, color: p.tCol, background: p.tBg, padding: "4px 10px", borderRadius: 100 }}>{p.type}</span>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <p style={{ fontFamily: FB, fontSize: 14, color: t.t1, lineHeight: 1.65, margin: "0 0 12px" }}>{p.content}</p>
-                    {p.hasImg && (
-                        <div style={{ height: 150, borderRadius: 14, background: `linear-gradient(135deg, #F0E8DC, #E8D8C8)`, marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${t.border}` }}>
-                            <Svg d={IC.award} s={40} c={`${t.orange}25`} />
+            {/* Stacked Card Area */}
+            <div style={{ flex: 1, position: "relative", margin: "0 22px", overflow: "hidden" }}>
+                {/* Stack shadow cards behind */}
+                <div style={{ position: "absolute", inset: 0, borderRadius: 24, background: "#ddd", transform: "scale(0.9) translateY(16px)", opacity: 0.25 }} />
+                <div style={{ position: "absolute", inset: 0, borderRadius: 24, background: "#ccc", transform: "scale(0.95) translateY(8px)", opacity: 0.4 }} />
+
+                {/* Current card — full-image event style */}
+                <div
+                    onPointerDown={onPointerDown}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={onPointerUp}
+                    onPointerLeave={() => { if (dragging) onPointerUp(); }}
+                    style={{
+                        position: "absolute", inset: 0,
+                        borderRadius: 24, overflow: "hidden",
+                        boxShadow: "0 12px 48px rgba(0,0,0,0.15)",
+                        transform: `translateX(${dragX}px) rotate(${dragX * 0.03}deg)`,
+                        transition: dragging ? "none" : "transform 0.3s ease",
+                        cursor: "grab", userSelect: "none", touchAction: "none",
+                    }}
+                >
+                    {/* Full background image */}
+                    <img src={current.postImg || current.avatar} alt="" style={{
+                        position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+                    }} />
+
+                    {/* Dark gradient — top for user info */}
+                    <div style={{
+                        position: "absolute", top: 0, left: 0, right: 0, height: "40%",
+                        background: "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%)",
+                    }} />
+
+                    {/* Dark gradient — bottom for content */}
+                    <div style={{
+                        position: "absolute", bottom: 0, left: 0, right: 0, height: "55%",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
+                    }} />
+
+                    {/* Swipe indicators */}
+                    {swipeAction === "right" && (
+                        <div style={{ position: "absolute", top: 60, left: 20, zIndex: 5, padding: "8px 20px", borderRadius: 14, background: "rgba(22,163,74,0.85)", backdropFilter: "blur(8px)" }}>
+                            <span style={{ fontFamily: FB, fontWeight: 800, fontSize: 15, color: "#fff" }}>🔖 Saved</span>
                         </div>
                     )}
-                    {/* AI suggestion strip */}
-                    <div style={{ background: t.s2, borderRadius: 10, padding: "8px 12px", marginBottom: 12, display: "flex", gap: 8, alignItems: "center" }}>
-                        <Svg d={IC.spark} s={13} c={t.orange} />
-                        <span style={{ fontFamily: FB, fontSize: 11, color: t.t2 }}>AI: <span style={{ color: t.orange, fontWeight: 700 }}>#HackIndia2025  #ReactDev  #Winner</span></span>
+                    {swipeAction === "left" && (
+                        <div style={{ position: "absolute", top: 60, right: 20, zIndex: 5, padding: "8px 20px", borderRadius: 14, background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)" }}>
+                            <span style={{ fontFamily: FB, fontWeight: 800, fontSize: 15, color: "#fff" }}>Next →</span>
+                        </div>
+                    )}
+
+                    {/* Top — user info overlaid */}
+                    <div style={{ position: "absolute", top: 14, left: 16, right: 16, zIndex: 3 }}>
+                        <Row g={10} ai="center" jc="space-between">
+                            <Row g={8} ai="center">
+                                <img src={current.avatar} alt="" style={{ width: 36, height: 36, borderRadius: 18, objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)" }} />
+                                <Col g={1}>
+                                    <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 13, color: "#fff" }}>{current.user}</span>
+                                    <span style={{ fontFamily: FB, fontSize: 11, color: "rgba(255,255,255,0.65)" }}>{current.college}</span>
+                                </Col>
+                            </Row>
+                            <span style={{ fontFamily: FB, fontSize: 11, fontWeight: 700, color: "#fff", background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)", padding: "5px 12px", borderRadius: 100 }}>{current.type}</span>
+                        </Row>
                     </div>
-                    <Row g={0}>
-                        {[[IC.heart, p.likes], [IC.chat, p.comments], [IC.share, null]].map(([ic, val], ai) => (
-                            <button key={ai} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", gap: 5, alignItems: "center", marginRight: 16 }}>
-                                <Svg d={ic} s={19} c={t.t2} />
-                                {val != null && <span style={{ fontFamily: FB, fontSize: 13, color: t.t2, fontWeight: 600 }}>{val}</span>}
+
+                    {/* Bottom — content + engagement */}
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 18px 16px", zIndex: 3 }}>
+                        <p style={{ fontFamily: FD, fontSize: 20, fontWeight: 700, color: "#fff", lineHeight: 1.35, margin: "0 0 14px", letterSpacing: -0.3 }}>
+                            {current.content}
+                        </p>
+
+                        {/* Engagement row */}
+                        <Row g={0} ai="center">
+                            <Row g={4} ai="center" sx={{ marginRight: 18 }}>
+                                <Svg d={IC.heart} s={18} c="#fff" />
+                                <span style={{ fontFamily: FB, fontSize: 13, color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>{current.likes}</span>
+                            </Row>
+                            <Row g={4} ai="center" sx={{ marginRight: 18 }}>
+                                <Svg d={IC.chat} s={18} c="#fff" />
+                                <span style={{ fontFamily: FB, fontSize: 13, color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>{current.comments}</span>
+                            </Row>
+                            <button style={{ background: "none", border: "none", cursor: "pointer", marginRight: 12 }}>
+                                <Svg d={IC.share} s={18} c="#fff" />
                             </button>
-                        ))}
-                        <button style={{ background: "none", border: "none", cursor: "pointer", marginLeft: "auto" }}>
-                            <Svg d={IC.bmark} s={19} c={t.t2} />
-                        </button>
-                    </Row>
+                            <button style={{ background: "none", border: "none", cursor: "pointer", marginLeft: "auto" }}>
+                                <Svg d={IC.bmark} s={18} c="#fff" />
+                            </button>
+                        </Row>
+                    </div>
                 </div>
-            ))}
-            <div style={{ height: 24 }} />
+
+                {/* Bookmark toast */}
+                {swipeAction === "bookmarked" && (
+                    <div style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 10, padding: "10px 22px", borderRadius: 100, background: t.t1, boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}>
+                        <span style={{ fontFamily: FB, fontWeight: 700, fontSize: 13, color: t.bg }}>🔖 Post Saved!</span>
+                    </div>
+                )}
+            </div>
+
+            {/* Swipe hint */}
+            <div style={{ textAlign: "center", padding: "10px 0 6px" }}>
+                <span style={{ fontFamily: FB, fontSize: 11, color: t.t3 }}>← swipe left for next · swipe right to save →</span>
+            </div>
+
+            {/* Floating Create Button */}
+            <button onClick={() => setShowCreate(!showCreate)} style={{
+                position: "absolute", bottom: 14, right: 22,
+                width: 50, height: 50, borderRadius: 25,
+                background: t.orange, border: "none",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", boxShadow: `0 8px 24px ${t.orangeMid}`, zIndex: 20,
+            }}>
+                <Svg d={IC.plus} s={22} c="#fff" w={2.5} />
+            </button>
         </Col>
     );
 };

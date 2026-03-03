@@ -13,10 +13,10 @@ import CareerNews from './screens/career/CareerNews.jsx';
 import CareerProfile from './screens/career/CareerProfile.jsx';
 
 /* ── Social Screens ── */
+import SocialHome from './screens/social/SocialHome.jsx';
 import SocialFeed from './screens/social/SocialFeed.jsx';
 import SocialConnect from './screens/social/SocialConnect.jsx';
 import SocialChat from './screens/social/SocialChat.jsx';
-import SocialGroups from './screens/social/SocialGroups.jsx';
 import SocialProfile from './screens/social/SocialProfile.jsx';
 
 /* ── Hackathon sample data ── */
@@ -33,7 +33,7 @@ const HACKATHONS = [
 export default function HYRUPApp() {
     const [mode, setMode] = useState("career");
     const [cTab, setCTab] = useState("home");
-    const [sTab, setSTab] = useState("feed");
+    const [sTab, setSTab] = useState("home");
     const [fading, setFading] = useState(false);
 
     /* ══════════════════════════════════════════════════════════════════
@@ -83,7 +83,7 @@ export default function HYRUPApp() {
 
     /* ── Nav items ── */
     const careerNavItems = [["home", IC.home, "Home"], ["jobs", IC.brief, "Jobs"], ["chat", IC.chat, "Chat"], ["news", IC.news, "News"], ["profile", IC.user, "Me"]];
-    const socialNavItems = [["feed", IC.home, "Feed"], ["connect", IC.users, "Connect"], ["chat", IC.chat, "Chat"], ["groups", IC.layers, "Groups"], ["profile", IC.user, "Me"]];
+    const socialNavItems = [["home", IC.home, "Home"], ["feed", IC.news, "Feed"], ["connect", IC.users, "Connect"], ["chat", IC.chat, "Chat"], ["profile", IC.user, "Me"]];
 
     const renderScreen = () => {
         if (isC) {
@@ -97,10 +97,10 @@ export default function HYRUPApp() {
             if (cTab === "news") return <CareerNews {...p} />;
             if (cTab === "profile") return <CareerProfile {...p} />;
         } else {
+            if (sTab === "home") return <SocialHome {...p} onNav={setSTab} />;
             if (sTab === "feed") return <SocialFeed {...p} />;
             if (sTab === "connect") return <SocialConnect {...p} />;
             if (sTab === "chat") return <SocialChat {...p} />;
-            if (sTab === "groups") return <SocialGroups {...p} />;
             if (sTab === "profile") return <SocialProfile {...p} />;
         }
     };
