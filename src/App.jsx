@@ -21,6 +21,17 @@ import SocialConnect from './screens/social/SocialConnect.jsx';
 import SocialChat from './screens/social/SocialChat.jsx';
 import SocialProfile from './screens/social/SocialProfile.jsx';
 
+/* ── Social Sub-Screens ── */
+import ChatDetailScreen from './screens/social/ChatDetailScreen.jsx';
+import GroupChatScreen from './screens/social/GroupChatScreen.jsx';
+import NewDMScreen from './screens/social/NewDMScreen.jsx';
+import CreateGroupScreen from './screens/social/CreateGroupScreen.jsx';
+import CreateGroupDetailsScreen from './screens/social/CreateGroupDetailsScreen.jsx';
+import DiscoverGroupsScreen from './screens/social/DiscoverGroupsScreen.jsx';
+import RequestsScreen from './screens/social/RequestsScreen.jsx';
+import GroupRequestsScreen from './screens/social/GroupRequestsScreen.jsx';
+import EditProfileScreen from './screens/social/EditProfileScreen.jsx';
+
 /* ── Hackathon sample data ── */
 const HACKATHONS = [
     { id: "h1", title: "HackIndia 2025", org: "MLH × Google", date: "Mar 15–17", loc: "Bengaluru", prize: "₹5L", tags: ["AI/ML", "Web3", "Open"], ch: "H", grad: "linear-gradient(145deg, #0D1A00, #1A2D00)", col: "#22C55E" },
@@ -40,6 +51,10 @@ export default function HYRUPApp() {
     const [cTab, setCTab] = useState("home");
     const [sTab, setSTab] = useState("home");
     const [fading, setFading] = useState(false);
+
+    /* ── Social sub-screen navigation stack ── */
+    const [socialScreen, setSocialScreen] = useState(null); // { screen: string, params?: any }
+    const [createGroupMembers, setCreateGroupMembers] = useState([]);
 
     /* ══════════════════════════════════════════════════════════════════
        EXPLICIT JOB STATE — three arrays, one job per bucket, no overlap
@@ -116,8 +131,18 @@ export default function HYRUPApp() {
             if (sTab === "home") return <SocialHome {...p} onNav={setSTab} />;
             if (sTab === "feed") return <SocialFeed {...p} />;
             if (sTab === "connect") return <SocialConnect {...p} />;
-            if (sTab === "chat") return <SocialChat {...p} />;
-            if (sTab === "profile") return <SocialProfile {...p} />;
+            if (sTab === "chat") return <SocialChat {...p}
+                onOpenChat={(c) => setSocialScreen({ screen: 'chatDetail', params: c })}
+                onOpenGroupChat={(g) => setSocialScreen({ screen: 'groupChat', params: g })}
+                onNewDM={() => setSocialScreen({ screen: 'newDM' })}
+                onNewGroup={() => setSocialScreen({ screen: 'createGroup' })}
+                onDiscoverGroups={() => setSocialScreen({ screen: 'discoverGroups' })}
+                onOpenRequests={() => setSocialScreen({ screen: 'requests' })}
+                onOpenGroupRequests={() => setSocialScreen({ screen: 'groupRequests' })}
+            />;
+            if (sTab === "profile") return <SocialProfile {...p}
+                onEditProfile={() => setSocialScreen({ screen: 'editProfile' })}
+            />;
         }
     };
 
@@ -153,11 +178,66 @@ export default function HYRUPApp() {
                     <Onboarding onComplete={() => { setOnboarded(true); addXP(50, 'Welcome!'); }} />
                 ) : (
                     <div style={{ display: "flex", flexDirection: "column", height: "100%", opacity: fading ? 0 : 1, transition: "opacity 0.16s ease" }}>
-                        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative" }}>
-                            {renderScreen()}
-                        </div>
-                        {xpToast && <XPToast amount={xpToast.amount} label={xpToast.label} />}
-                        <BottomNav mode={mode} active={isC ? cTab : sTab} onSelect={isC ? setCTab : setSTab} items={isC ? careerNavItems : socialNavItems} />
+                        {/* Social sub-screen overlay */}
+                        {!isC && socialScreen ? (
+                            <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+                                {socialScreen.screen === 'chatDetail' && (
+                                    <ChatDetailScreen
+                                        onBack={() => setSocialScreen(null)}
+                                        routeParams={socialScreen.params}
+                                    />
+                                )}
+                                {socialScreen.screen === 'groupChat' && (
+                                    <GroupChatScreen
+                                        onBack={() => setSocialScreen(null)}
+                                        routeParams={socialScreen.params}
+                                    />
+                                )}
+                                {socialScreen.screen === 'newDM' && (
+                                    <NewDMScreen onBack={() => setSocialScreen(null)} />
+                                )}
+                                {socialScreen.screen === 'createGroup' && (
+                                    <CreateGroupScreen
+                                        onBack={() => setSocialScreen(null)}
+                                        onNext={(members) => {
+                                            setCreateGroupMembers(members);
+                                            setSocialScreen({ screen: 'createGroupDetails' });
+                                        }}
+                                    />
+                                )}
+                                {socialScreen.screen === 'createGroupDetails' && (
+                                    <CreateGroupDetailsScreen
+                                        onBack={() => setSocialScreen({ screen: 'createGroup' })}
+                                        onCancel={() => setSocialScreen(null)}
+                                        onCreate={(groupData) => {
+                                            console.log('Group created:', groupData);
+                                            setSocialScreen(null);
+                                        }}
+                                        members={createGroupMembers}
+                                    />
+                                )}
+                                {socialScreen.screen === 'discoverGroups' && (
+                                    <DiscoverGroupsScreen onBack={() => setSocialScreen(null)} />
+                                )}
+                                {socialScreen.screen === 'requests' && (
+                                    <RequestsScreen onBack={() => setSocialScreen(null)} />
+                                )}
+                                {socialScreen.screen === 'groupRequests' && (
+                                    <GroupRequestsScreen onBack={() => setSocialScreen(null)} />
+                                )}
+                                {socialScreen.screen === 'editProfile' && (
+                                    <EditProfileScreen onBack={() => setSocialScreen(null)} />
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative" }}>
+                                    {renderScreen()}
+                                </div>
+                                {xpToast && <XPToast amount={xpToast.amount} label={xpToast.label} />}
+                                <BottomNav mode={mode} active={isC ? cTab : sTab} onSelect={(tab) => { setSocialScreen(null); (isC ? setCTab : setSTab)(tab); }} items={isC ? careerNavItems : socialNavItems} />
+                            </>
+                        )}
                     </div>
                 )}
             </Phone>

@@ -54,14 +54,33 @@ export const IC = {
     minus: "M5 12h14",
     chevR: "M9 18l6-6-6-6",
     cam: "M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2zM12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z",
+    /* ── Social chat additions ── */
+    pin: "M12 17v5M9 11V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v7M4 12h16M7.5 12l1 5h7l1-5",
+    pinFilled: "M12 17v5M9 11V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v7M4 12h16M7.5 12l1 5h7l1-5",
+    bellOff: "M13.73 21a2 2 0 0 1-3.46 0M18.63 13A17.89 17.89 0 0 1 18 8M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14M18 8a6 6 0 0 0-9.33-5M1 1l22 22",
+    archive: "M21 8v13H3V8M1 3h22v5H1z M10 12h4",
+    mail: "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6",
+    trash: "M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+    lock: "M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4",
+    camera: "M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z",
+    chevronLeft: "M15 18l-6-6 6-6",
+    chevronRight: "M9 18l6-6-6-6",
 };
 
 /* ── Svg component ── */
-export const Svg = ({ d, s = 20, c = "#fff", w = 1.85, fill = "none" }) => (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill={fill} stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
-        <path d={d} />
-    </svg>
-);
+export const Svg = ({ d, s = 20, c = "#fff", w = 1.85, fill = "none" }) => {
+    // Support space-separated multi-path d values (e.g. "M... M...")
+    const paths = d ? d.split(/(?=M)/).filter(Boolean) : [];
+    return (
+        <svg width={s} height={s} viewBox="0 0 24 24" fill={fill} stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, display: "block" }}>
+            {paths.length <= 1 ? (
+                <path d={d} />
+            ) : (
+                paths.map((p, i) => <path key={i} d={p.trim()} />)
+            )}
+        </svg>
+    );
+};
 
 /* ── Hyru Mascot — inline SVG character ── */
 export const HyruMascot = ({ variant = 'idle', size = 80 }) => {

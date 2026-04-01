@@ -1,73 +1,289 @@
+import { useState } from "react";
 import { T, FD, FB } from '../../tokens.js';
 import { IC, Svg } from '../../icons.jsx';
 import { Row, Col } from '../../helpers.jsx';
-import ModeToggle from '../../components/ModeToggle.jsx';
 
 /* ── SOCIAL PROFILE ── */
-const SocialProfile = ({ mode, onToggle }) => {
+const SocialProfile = ({ onEditProfile }) => {
     const t = T.s;
+    const [activeTab, setActiveTab] = useState("posts");
+
+    // Mock user data
+    const user = {
+        name: "Rahul Sharma",
+        handle: "@rahul_dev",
+        initial: "R",
+        bio: "Full Stack Developer passionate about building real-world apps. React | Node.js | Figma enthusiast.",
+        followers: 1240,
+        following: 890,
+        posts: 42,
+        streak: 7,
+        skills: ["React", "Node.js", "Figma", "Python", "TypeScript"]
+    };
+
+    const profileTabs = [
+        { id: "posts", label: "Posts" },
+        { id: "featured", label: "Featured" },
+        { id: "saved", label: "Saved" }
+    ];
+
+    const mockPosts = Array.from({ length: 6 }, (_, i) => ({
+        id: i + 1,
+        color: [`#EFF6FF`, `#FAF5FF`, `#FFF7ED`, `#ECFDF5`, `#FEF2F2`, `#F5F3FF`][i % 6]
+    }));
+
     return (
-        <Col>
-            {/* Cover */}
-            <div style={{ height: 160, background: `linear-gradient(160deg, #FFF1EB 0%, #FFE4D6 50%, #F5F0E8 100%)`, position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", top: 60, left: "50%", transform: "translateX(-50%)", width: 200, height: 200, borderRadius: "50%", background: `${t.orange}10`, filter: "blur(40px)" }} />
-                <div style={{ position: "absolute", top: 14, right: 18 }}>
-                    <ModeToggle mode={mode} onToggle={onToggle} />
-                </div>
-                <div style={{ position: "absolute", bottom: -32, left: "50%", transform: "translateX(-50%)" }}>
-                    <div style={{ width: 72, height: 72, borderRadius: "50%", background: t.s1, border: `3px solid ${t.bg}`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: t.shadow }}>
-                        <span style={{ fontFamily: FD, fontWeight: 900, fontSize: 28, color: t.orange }}>R</span>
+        <Col sx={{ width: "100%", height: "100%", background: t.bg }}>
+            <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+                {/* Header */}
+                <Row ai="center" jc="space-between" sx={{ padding: "12px 16px 0" }}>
+                    <span style={{ fontFamily: FD, fontWeight: 700, fontSize: 26, color: "#111111" }}>Profile</span>
+                    <Row g={8} ai="center">
+                        <button 
+                            onClick={onEditProfile}
+                            style={{
+                                padding: "8px 16px",
+                                borderRadius: 20,
+                                backgroundColor: "#F5F5F5",
+                                border: "none",
+                                cursor: "pointer",
+                                fontFamily: FB,
+                                fontSize: 13,
+                                fontWeight: 600,
+                                color: "#1A1A1A",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 6
+                            }}
+                        >
+                            <Svg d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7 M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" s={14} c="#1A1A1A" w={1.8} />
+                            Edit
+                        </button>
+                        <button
+                            style={{
+                                width: 36,
+                                height: 36,
+                                borderRadius: 18,
+                                backgroundColor: "#F5F5F5",
+                                border: "none",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}
+                        >
+                            <Svg d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 0 0 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" s={18} c="#1A1A1A" />
+                        </button>
+                    </Row>
+                </Row>
+
+                {/* Profile Card */}
+                <div style={{
+                    margin: "20px 16px",
+                    padding: "24px 20px",
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: 20,
+                    boxShadow: "0 2px 12px rgba(0,0,0,0.06)"
+                }}>
+                    <Row g={16} ai="center">
+                        {/* Avatar with Streak Badge */}
+                        <div style={{ position: "relative" }}>
+                            <div style={{
+                                width: 72,
+                                height: 72,
+                                borderRadius: 36,
+                                background: `linear-gradient(135deg, ${t.orange || '#FF5733'} 0%, #FF8A65 100%)`,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                boxShadow: "0 4px 16px rgba(255,87,51,0.25)"
+                            }}>
+                                <span style={{
+                                    fontFamily: FD,
+                                    fontWeight: 900,
+                                    fontSize: 28,
+                                    color: "#FFFFFF"
+                                }}>{user.initial}</span>
+                            </div>
+                            {/* Fire Streak Badge */}
+                            <div style={{
+                                position: "absolute",
+                                bottom: -4,
+                                right: -4,
+                                width: 28,
+                                height: 28,
+                                borderRadius: 14,
+                                backgroundColor: "#FFFFFF",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+                            }}>
+                                <span style={{ fontSize: 14 }}>🔥</span>
+                            </div>
+                        </div>
+
+                        {/* Name & Handle */}
+                        <Col g={4} sx={{ flex: 1 }}>
+                            <span style={{
+                                fontFamily: FD,
+                                fontWeight: 700,
+                                fontSize: 20,
+                                color: "#111111"
+                            }}>{user.name}</span>
+                            <span style={{
+                                fontFamily: FB,
+                                fontSize: 14,
+                                color: "#888888",
+                                fontWeight: 500
+                            }}>{user.handle}</span>
+                            <Row g={4} ai="center" sx={{ marginTop: 2 }}>
+                                <span style={{ fontSize: 12 }}>🔥</span>
+                                <span style={{
+                                    fontFamily: FB,
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    color: t.orange || "#FF5733"
+                                }}>{user.streak} day streak</span>
+                            </Row>
+                        </Col>
+                    </Row>
+
+                    {/* Bio */}
+                    <p style={{
+                        fontFamily: FB,
+                        fontSize: 14,
+                        color: "#555555",
+                        lineHeight: "20px",
+                        marginTop: 16,
+                        marginBottom: 0
+                    }}>{user.bio}</p>
+
+                    {/* Stats Row */}
+                    <Row jc="space-around" sx={{
+                        marginTop: 20,
+                        padding: "16px 0",
+                        borderTop: "1px solid #F2F2F2",
+                        borderBottom: "1px solid #F2F2F2"
+                    }}>
+                        {[
+                            { label: "Posts", value: user.posts },
+                            { label: "Followers", value: user.followers.toLocaleString() },
+                            { label: "Following", value: user.following.toLocaleString() }
+                        ].map((stat, i) => (
+                            <Col key={i} ai="center" g={2}>
+                                <span style={{
+                                    fontFamily: FD,
+                                    fontWeight: 700,
+                                    fontSize: 18,
+                                    color: "#111111"
+                                }}>{stat.value}</span>
+                                <span style={{
+                                    fontFamily: FB,
+                                    fontSize: 12,
+                                    color: "#888888",
+                                    fontWeight: 500
+                                }}>{stat.label}</span>
+                            </Col>
+                        ))}
+                    </Row>
+
+                    {/* Skills */}
+                    <div style={{ marginTop: 16 }}>
+                        <span style={{
+                            fontFamily: FB,
+                            fontSize: 12,
+                            fontWeight: 600,
+                            color: "#AEAEB2",
+                            textTransform: "uppercase",
+                            letterSpacing: 0.6,
+                            marginBottom: 10,
+                            display: "block"
+                        }}>Skills</span>
+                        <div style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 8
+                        }}>
+                            {user.skills.map((skill, i) => (
+                                <div key={i} style={{
+                                    padding: "6px 14px",
+                                    borderRadius: 20,
+                                    backgroundColor: "#FFF0EB",
+                                    border: `1px solid ${t.orange || '#FF5733'}30`
+                                }}>
+                                    <span style={{
+                                        fontFamily: FB,
+                                        fontSize: 13,
+                                        fontWeight: 600,
+                                        color: t.orange || "#FF5733"
+                                    }}>{skill}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div style={{ paddingTop: 44, textAlign: "center", padding: "44px 22px 0" }}>
-                <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 22, color: t.t1, display: "block" }}>Rahul Sharma</span>
-                <span style={{ fontFamily: FB, fontSize: 13, color: t.t2, display: "block", marginBottom: 16 }}>B.Tech CSE · RGPV · 2026 · Full Stack Dev</span>
+                {/* Content Tabs */}
+                <div style={{ padding: "0 16px", marginBottom: 12 }}>
+                    <div style={{
+                        display: "flex",
+                        gap: 0,
+                        backgroundColor: "#F5F5F5",
+                        borderRadius: 12,
+                        padding: 3
+                    }}>
+                        {profileTabs.map(tab => {
+                            const active = activeTab === tab.id;
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    style={{
+                                        flex: 1,
+                                        height: 36,
+                                        background: active ? "#FFFFFF" : "transparent",
+                                        color: active ? "#111111" : "#888888",
+                                        borderRadius: 10,
+                                        fontFamily: FB,
+                                        fontSize: 13,
+                                        fontWeight: 600,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        transition: "all 0.2s",
+                                        boxShadow: active ? "0 1px 4px rgba(0,0,0,0.08)" : "none"
+                                    }}
+                                >
+                                    {tab.label}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
 
-                {/* Stats row */}
-                <Row ai="center" jc="center" g={0} sx={{ borderTop: `1px solid ${t.border}`, borderBottom: `1px solid ${t.border}`, padding: "14px 0", marginBottom: 18 }}>
-                    {[["47", "Connections"], ["12", "Posts"], ["7", "Skills"], ["2", "Wins"]].map(([n, l], i, arr) => (
-                        <div key={l} style={{ flex: 1, textAlign: "center", borderRight: i < arr.length - 1 ? `1px solid ${t.border}` : "none" }}>
-                            <span style={{ fontFamily: FD, fontWeight: 800, fontSize: 20, color: t.t1, display: "block" }}>{n}</span>
-                            <span style={{ fontFamily: FB, fontSize: 10, color: t.t2 }}>{l}</span>
-                        </div>
-                    ))}
-                </Row>
-
-                {/* Skill badges */}
-                <Row g={6} jc="center" sx={{ flexWrap: "wrap", marginBottom: 18 }}>
-                    {[["React ✓", "#2563EB", "#EFF6FF"], ["Node.js ✓", "#16A34A", "#E8F8EF"], ["Figma ✓", "#9333EA", "#FAF5FF"], ["Python ✓", "#D97706", "#FEF3C7"]].map(([s, col, bg]) => (
-                        <span key={s} style={{ fontFamily: FB, fontSize: 12, fontWeight: 700, color: col, background: bg, padding: "5px 12px", borderRadius: 100 }}>{s}</span>
-                    ))}
-                </Row>
-
-                {/* Action row */}
-                <Row g={10} sx={{ marginBottom: 22 }}>
-                    <button style={{ flex: 1, height: 44, borderRadius: 14, background: t.orange, border: "none", color: "#fff", fontFamily: FB, fontSize: 14, fontWeight: 800, cursor: "pointer", boxShadow: `0 4px 16px ${t.orangeMid}` }}>✦ AI Resume</button>
-                    <button style={{ flex: 1, height: 44, borderRadius: 14, background: t.s1, border: `1.5px solid ${t.border}`, color: t.t1, fontFamily: FB, fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: t.shadow }}>Edit Profile</button>
-                </Row>
-
-                {/* Tab icons */}
-                <Row g={0} sx={{ borderBottom: `1px solid ${t.border}`, marginBottom: 2 }}>
-                    {[[IC.grid, true], [IC.spark, false], [IC.bmark, false]].map(([ic, sel], idx) => (
-                        <div key={idx} style={{ flex: 1, display: "flex", justifyContent: "center", padding: "10px 0", borderBottom: sel ? `2.5px solid ${t.orange}` : "none" }}>
-                            <Svg d={ic} s={19} c={sel ? t.orange : t.t3} />
-                        </div>
-                    ))}
-                </Row>
-
-                {/* Project grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2 }}>
-                    {[["Todo App", "#FFF1EB", t.orange], ["Weather UI", "#EFF6FF", "#2563EB"], ["Chat Bot", "#FAF5FF", "#9333EA"], ["Portfolio", "#FEF3C7", "#D97706"], ["E-Commerce", "#E8F8EF", "#16A34A"], ["Resume AI", "#FFF1EB", t.orange]].map(([p, bg, col], i) => (
-                        <div key={p} style={{ aspectRatio: "1", background: bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, border: "1px solid rgba(0,0,0,0.04)" }}>
-                            <Svg d={IC.grid} s={22} c={`${col}55`} />
-                            <span style={{ fontFamily: FB, fontSize: 9, color: `${col}99`, fontWeight: 700 }}>{p}</span>
+                {/* Post Grid */}
+                <div style={{
+                    padding: "0 16px 100px 16px",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: 3
+                }}>
+                    {mockPosts.map(post => (
+                        <div key={post.id} style={{
+                            backgroundColor: post.color,
+                            borderRadius: 12,
+                            aspectRatio: "1",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            transition: "transform 0.2s"
+                        }}>
+                            <Svg d={IC.img} s={24} c="#CCCCCC" />
                         </div>
                     ))}
                 </div>
             </div>
-            <div style={{ height: 28 }} />
         </Col>
     );
 };
